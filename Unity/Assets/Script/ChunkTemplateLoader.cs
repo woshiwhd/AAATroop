@@ -95,6 +95,9 @@ namespace Script
                             continue;
                         }
 
+                        // 设置模板名，便于调试显示
+                        try { chunk.templateName = ta.name; } catch { }
+
                         _templates.Add(chunk);
                         totalLoaded++;
                     }
@@ -123,6 +126,8 @@ namespace Script
             if (t.blocking != null) copy.blocking = (byte[])t.blocking.Clone();
             copy.originX = t.originX;
             copy.originY = t.originY;
+            // 复制模板名用于调试显示
+            copy.templateName = t.templateName;
             return copy;
         }
 

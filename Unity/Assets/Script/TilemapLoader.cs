@@ -18,6 +18,8 @@ namespace Script
             public int height;
             public int[] tiles; // row-major width*height
             public byte[] blocking; // optional: 0/1 per cell
+            // 新增：模板名称（可为空），用于编辑器显示或调试
+            public string templateName;
         }
 
         // 仅加载并解析 chunk 数据，返回 ChunkData 给调用方（不会写入 Tilemap）。

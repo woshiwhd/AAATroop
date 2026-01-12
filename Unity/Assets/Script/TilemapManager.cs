@@ -46,6 +46,8 @@ namespace Script
             public ChunkStateEnum state;
             public CancellationTokenSource cts;
             public int generation;
+            // 保存已加载的 ChunkData，便于编辑器调试展示（仅存内存）
+            public TilemapLoader.ChunkData chunkData;
         }
         // 记录所有 chunk 的状态；键为 chunk 坐标
         private readonly Dictionary<Vector2Int, ChunkRecord> _records = new Dictionary<Vector2Int, ChunkRecord>();
@@ -85,12 +87,38 @@ namespace Script
                 }
                 else
                 {
-                    // 也尝试从 Resources 中加载名为 TileDatabase 的资源（如果你有导入）
-                    var resDb = Resources.Load<TileDatabase>("TileDatabase");
-                    if (resDb != null)
+                    // 在编辑器中，尝试通过 AssetDatabase 查找任意 TileDatabase 资源并赋值
+    #if UNITY_EDITOR
+                    try
                     {
-                        tileDatabase = resDb;
-                        if (enableDebugLogs) Debug.Log("TilemapManager: 从 Resources 加载 TileDatabase 并赋值。");
+                        var guids = UnityEditor.AssetDatabase.FindAssets("t:TileDatabase");
+                        if (guids != null && guids.Length > 0)
+                        {
+                            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                            var dbAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TileDatabase>(path);
+                            if (dbAsset != null)
+                            {
+                                tileDatabase = dbAsset;
+                                if (enableDebugLogs) Debug.Log($"TilemapManager: 在编辑器 AssetDatabase 中找到 TileDatabase 并赋值 ({path})");
+                            }
+                        }
+                    }
+                    catch { }
+    #endif
+
+                    // 运行时尝试从 Resources 中加载任意 TileDatabase（如果开发者将其放到 Resources 下）
+                    if (tileDatabase == null)
+                    {
+                        try
+                        {
+                            var arr = Resources.LoadAll<TileDatabase>("");
+                            if (arr != null && arr.Length > 0)
+                            {
+                                tileDatabase = arr[0];
+                                if (enableDebugLogs) Debug.Log("TilemapManager: 从 Resources.LoadAll 中找到 TileDatabase 并赋值。");
+                            }
+                        }
+                        catch { }
                     }
                 }
             }
@@ -291,6 +319,8 @@ namespace Script
                 // 写入完成，标记为 Loaded
                 if (_records.TryGetValue(chunk, out rec) && rec.generation == generation)
                 {
+                    // 保存用于调试/查询的 chunk 数据副本
+                    try { rec.chunkData = data; } catch { }
                     rec.state = ChunkStateEnum.Loaded;
                 }
             }
@@ -424,6 +454,23 @@ namespace Script
         void OnDestroy()
         {
             ClearAll();
+        }
+
+        /// <summary>
+        /// 尝试获取已加载的 chunk 数据（仅在 chunk 已加载时返回 true）。编辑器可调用此方法来绘制调试信息。
+        /// </summary>
+        public bool TryGetChunkData(Vector2Int chunk, out TilemapLoader.ChunkData data)
+        {
+            data = null;
+            if (_records.TryGetValue(chunk, out var rec))
+            {
+                if (rec != null && rec.chunkData != null && rec.state == ChunkStateEnum.Loaded)
+                {
+                    data = rec.chunkData;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
