@@ -36,12 +36,12 @@ public static class TilemapDebugDrawer
         double now = EditorApplication.timeSinceStartup;
         if (!needsRefresh && now - lastUpdateTime < TilemapDebugWindow.Settings.updateFrequency)
         {
-            // 直接用 cache 渲染
+            // 使用缓存绘制
             DrawCached(sv);
             return;
         }
 
-        // 更新缓存
+        // 更新可见块缓存
         lastUpdateTime = now;
         needsRefresh = false;
         cachedVisibleChunks.Clear();
@@ -68,7 +68,7 @@ public static class TilemapDebugDrawer
 
             if (tilemap == null)
             {
-                // 尝试通过反射访问私有字段 targetTilemap
+                // 回退：通过反射访问私有字段 targetTilemap
                 var t = mgr.GetType();
                 var f = t.GetField("targetTilemap", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 if (f != null) tilemap = f.GetValue(mgr) as Tilemap;
@@ -76,7 +76,7 @@ public static class TilemapDebugDrawer
 
             if (tilemap == null) return;
 
-            // 计算 SceneView 相机视野的 world 四角
+            // 计算 SceneView 相机视野在世界坐标的四个角
             Camera cam = sv.camera;
             float zDistance = Mathf.Abs(cam.transform.position.z - tilemap.transform.position.z);
             Vector3 bl = cam.ScreenToWorldPoint(new Vector3(0, 0, zDistance));
@@ -100,8 +100,8 @@ public static class TilemapDebugDrawer
         }
         catch (Exception ex)
         {
-            // 保护性捕获，避免编辑器窗口崩溃
-            Debug.LogWarning($"TilemapDebugDrawer: exception while computing visible chunks: {ex}");
+            // 保护性捕获，避免编辑器崩溃
+            Debug.LogWarning($"TilemapDebugDrawer: 计算可见块时发生异常: {ex}");
             return;
         }
 
@@ -115,11 +115,11 @@ public static class TilemapDebugDrawer
         {
             foreach (var c in cachedVisibleChunks)
             {
-                // 计算 chunk 世界中心并绘制标签
+                // 计算块世界中心并绘制标签
                 var mgr = TilemapDebugWindow.Settings.targetManager;
                 if (mgr == null) break;
 
-                // 获取 chunk size
+                // 获取块大小
                 int chunkW = 32; int chunkH = 32;
                 try
                 {
@@ -149,7 +149,7 @@ public static class TilemapDebugDrawer
                     }
                     catch { }
 
-                    string line = tplName != null ? tplName : "(unloaded)";
+                    string line = tplName != null ? tplName : "(未加载)";
                     var rect2 = new Rect(guiPos.x - 40, guiPos.y + 8, 120, 18);
                     GUIStyle style2 = new GUIStyle(EditorStyles.miniLabel);
                     style2.normal.textColor = tplName != null ? Color.cyan : Color.gray;
@@ -191,7 +191,7 @@ public static class TilemapDebugDrawer
                                         int id = 0;
                                         if (cd.tiles != null && idx < cd.tiles.Length) id = cd.tiles[idx];
 
-                                        // 构建显示字符串：优先显示 raw id；如果有 TileDatabase，则附带 tile 名称，便于调试。
+                                        // 构建显示字符串：优先显示原始 id；如果有 TileDatabase，则附带 tile 名称，便于调试。
                                         string disp = id.ToString();
                                         if (db != null)
                                         {
@@ -219,7 +219,7 @@ public static class TilemapDebugDrawer
                         catch (Exception ex)
                         {
                             // 容错：避免在 Scene 绘制时抛异常
-                            Debug.LogWarning($"TilemapDebugDrawer: draw tile ids failed for chunk {c}: {ex}");
+                            Debug.LogWarning($"TilemapDebugDrawer: 绘制块 {c} 的 tile ids 失败: {ex}");
                         }
                     }
                 }

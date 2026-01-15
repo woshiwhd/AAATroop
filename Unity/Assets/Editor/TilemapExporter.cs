@@ -24,14 +24,14 @@ public class TilemapExporter
         var go = Selection.activeGameObject;
         if (go == null)
         {
-            Debug.LogWarning("Select a GameObject that has a Tilemap");
+            Debug.LogWarning("请选择一个包含 Tilemap 的游戏对象");
             return;
         }
 
         var tilemap = go.GetComponent<Tilemap>();
         if (tilemap == null)
         {
-            Debug.LogWarning("Selected object does not have a Tilemap component.");
+            Debug.LogWarning("所选对象没有 Tilemap 组件.");
             return;
         }
 
@@ -57,7 +57,7 @@ public class TilemapExporter
         }
 
         AssetDatabase.Refresh();
-        Debug.Log("Export complete.");
+        Debug.Log("导出完成.");
     }
 
     private static void ExportChunk(Tilemap tilemap, string mapName, int cx, int cy, int chunkSize)
@@ -75,7 +75,7 @@ public class TilemapExporter
         var db = GetTileDatabase();
         if (db == null)
         {
-            Debug.LogWarning("TileDatabase asset not found under Assets. Create one via Create->Map->TileDatabase and add tiles.");
+            Debug.LogWarning("未在 Assets 下找到 TileDatabase 资源. 请通过 Create->Map->TileDatabase 创建一个并添加瓷砖.");
             return;
         }
 
@@ -89,7 +89,7 @@ public class TilemapExporter
                 int id = db.GetTileId(tile);
                 chunk.tiles[idx] = id;
 
-                // blocking if tilemap has collider for that tile; simple heuristic: tile != null on blocking layer
+                // 判断阻挡：如果该格有 Tile 则视为阻挡（简单启发式：tile != null）
                 chunk.blocking[idx] = (byte)(tile != null ? 1 : 0);
             }
         }
@@ -99,7 +99,7 @@ public class TilemapExporter
         string path = System.IO.Path.Combine(dir, $"{mapName}_{cx}_{cy}.json");
         string json = JsonUtility.ToJson(chunk);
         System.IO.File.WriteAllText(path, json);
-        Debug.Log($"Exported chunk {cx},{cy} to {path}");
+        Debug.Log($"已导出块 {cx},{cy} 到 {path}");
     }
 
     private static TileDatabase GetTileDatabase()
@@ -110,4 +110,3 @@ public class TilemapExporter
         return AssetDatabase.LoadAssetAtPath<TileDatabase>(path);
     }
 }
-
