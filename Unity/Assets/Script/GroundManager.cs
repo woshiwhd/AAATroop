@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Script
+namespace Script.Utilities
 {
     /// <summary>
     /// GroundManager 已简化为仅支持 Tilemap 流程。

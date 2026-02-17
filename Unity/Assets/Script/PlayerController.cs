@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Script
+namespace Script.Player
 {
     /// <summary>
     /// PlayerController：一个简单的 2D 角色控制器（适用于 tilemap 场景）
@@ -20,7 +20,7 @@ namespace Script
         public Rigidbody2D rb; // 建议在 Inspector 指定，若为空将在 Awake 尝试获取
         public Animator animator; // 可选：用于播放行走/站立动画
 
-        // Animator 参数哈希（避免字符串参数的性能与静态分析警告）
+        // Animator 参数哈希（避免字符串参数的性能与静态分析警告）1
         private static readonly int MoveXHash = Animator.StringToHash("MoveX");
         private static readonly int MoveYHash = Animator.StringToHash("MoveY");
         private static readonly int SpeedHash = Animator.StringToHash("Speed");

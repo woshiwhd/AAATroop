@@ -2,27 +2,20 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-/// <summary>
-/// 简单的资源提供器：基于 UnityEngine.Resources
-/// 说明：Resources.Load 是 Unity API，必须在主线程调用。本实现保证不论调用者在哪个线程，都会先切回主线程再执行 Resources.Load。
-/// 注意：因为 Resources.Load 是同步操作，无法在执行中被 CancellationToken 中断；
-/// 如果传入的 CancellationToken 已经处于取消状态，会立即返回一个已取消的任务。
-/// </summary>
-public class ResourcesProvider : IResourceProvider
+namespace Script.Core
 {
-    public async UniTask<TextAsset> LoadTextAsync(string path, CancellationToken ct = default)
+    /// <summary>
+    /// 简易资源提供器：实现 IResourceProvider，用于在运行时从 Resources 加载文本资源（例如 chunk JSON）
+    /// - 仅在未提供自定义 provider 时使用
+    /// </summary>
+    public class ResourcesProvider : IResourceProvider
     {
-        // 如果调用者已经请求取消，马上返回已取消的任务
-        if (ct.IsCancellationRequested)
+        public async UniTask<TextAsset> LoadTextAsync(string path, CancellationToken ct = default)
         {
-            return await UniTask.FromCanceled<TextAsset>(ct);
+            // 这里直接使用 Unity 的 Resources.LoadTextAsset（同步）并包装为 UniTask，便于在异步流程中使用
+            await UniTask.Yield(ct);
+            var ta = Resources.Load<TextAsset>(path);
+            return ta;
         }
-
-        // 确保在主线程执行 Unity API
-        await UniTask.SwitchToMainThread(ct);
-
-        // Resources.Load 是同步的；在主线程直接执行并返回结果
-        TextAsset ta = Resources.Load<TextAsset>(path);
-        return ta;
     }
 }

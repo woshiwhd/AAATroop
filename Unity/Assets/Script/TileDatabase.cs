@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Script
+namespace Script.Utilities
 {
     [CreateAssetMenu(fileName = "TileDatabase", menuName = "Map/TileDatabase")]
     public class TileDatabase : ScriptableObject

@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
+using Script.Player;
 
-namespace Script
+namespace Script.Core
 {
     /// <summary>
     /// 主入口类（示例）：处理两个按钮和一个文本显示。
@@ -31,7 +32,7 @@ namespace Script
         [SerializeField] private GameObject GridRoot;
         [SerializeField] private GameObject EntitiesRoot;
         [SerializeField] private Tilemap GroundTilemap; // 可用来快速检测 Tilemap 是否存在并被设置
-        [SerializeField] private Tilemap BlockingTilemap; // 可选的阻挡层引用
+        [SerializeField] private Tilemap BlockingTilemap; // 阻挡层 Tilemap（可选）
         [SerializeField] private GameObject PlayerObject;
 
         // Start is called before the first frame update

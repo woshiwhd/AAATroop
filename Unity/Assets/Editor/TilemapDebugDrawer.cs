@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Script; // 引入 TileDatabase 等在 Script 命名空间下的类型
+using Script.Utilities; // TileDatabase 等
 
 #if UNITY_EDITOR
 [InitializeOnLoad]

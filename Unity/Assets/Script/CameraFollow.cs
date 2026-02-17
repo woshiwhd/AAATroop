@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Script
+namespace Script.Utilities
 {
     /// <summary>
     /// CameraFollow：简单的摄像机跟随脚本（可替代 Cinemachine 的基础用法）
@@ -25,4 +25,3 @@ namespace Script
         }
     }
 }
-

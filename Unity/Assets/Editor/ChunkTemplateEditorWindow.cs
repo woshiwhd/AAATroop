@@ -1,8 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Script;
+using Script.Managers;
+using Script.Utilities;
 using UnityEditor;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -24,12 +28,12 @@ namespace Editor
 
         // 从 Resources 加载的模板
         private List<TextAsset> _templateAssets = new List<TextAsset>();
-        private List<Script.TilemapLoader.ChunkData> _templateDatas = new List<Script.TilemapLoader.ChunkData>();
+        private List<TilemapLoader.ChunkData> _templateDatas = new List<TilemapLoader.ChunkData>();
 
         private int _selectedIndex = -1;
 
         // 工作副本
-        private Script.TilemapLoader.ChunkData _working;
+        private TilemapLoader.ChunkData _working;
 
         // 强制的块尺寸
         private int _chunkWidth = 32;
@@ -41,7 +45,7 @@ namespace Editor
         private bool _paintBlocking = false;
 
         // 瓷砖数据库
-        private Script.TileDatabase _tileDb = null;
+        private TileDatabase _tileDb = null;
         private List<TileBase> _dbTiles = new List<TileBase>();
 
         // 保存名称
@@ -55,6 +59,9 @@ namespace Editor
         [MenuItem("Tools/Map/Chunk Template Editor")]
         public static void OpenWindow()
         {
+            
+                  
+
             var wnd = GetWindow<ChunkTemplateEditorWindow>("Chunk Template Editor");
             wnd.minSize = new Vector2(600, 320);
             wnd.LoadTemplates();
@@ -64,6 +71,7 @@ namespace Editor
 
         private void OnEnable()
         {
+          //  ChunkParser.Example();
             LoadTemplates();
             LoadTileDatabase();
             RefreshSceneChunkSize();
@@ -91,8 +99,8 @@ namespace Editor
                     sanitized = Regex.Replace(sanitized, @"/\*.*?\*/", "", RegexOptions.Singleline);
                     sanitized = sanitized.Trim();
 
-                    var data = JsonUtility.FromJson<Script.TilemapLoader.ChunkData>(sanitized);
-                    if (data == null) data = new Script.TilemapLoader.ChunkData();
+                    var data = JsonUtility.FromJson<TilemapLoader.ChunkData>(sanitized);
+                    if (data == null) data = new TilemapLoader.ChunkData();
 
                     // 回退：如果 tiles 缺失或长度不对，尝试手动从文本中提取数字
                     try
@@ -102,10 +110,8 @@ namespace Editor
                         int height = data.height;
                         if (width <= 0 || height <= 0)
                         {
-                            var mw = Regex.Match(sanitized, @"""width""
-                                \s*:\s*(\d+)", RegexOptions.Singleline);
-                            var mh = Regex.Match(sanitized, @"""height""
-                                \s*:\s*(\d+)", RegexOptions.Singleline);
+                            var mw = Regex.Match(sanitized, @"""width""\s*:\s*(\d+)", RegexOptions.Singleline);
+                            var mh = Regex.Match(sanitized, @"""height""\s*:\s*(\d+)", RegexOptions.Singleline);
                             if (mw.Success) int.TryParse(mw.Groups[1].Value, out width);
                             if (mh.Success) int.TryParse(mh.Groups[1].Value, out height);
                             if (width > 0 && height > 0)
@@ -124,50 +130,12 @@ namespace Editor
                                 // 尝试从文本中提取 tiles 数字
                                 if (needTiles)
                                 {
-                                    var mt = Regex.Match(sanitized, @"""tiles""
-                                        \s*:\s*\[(.*?)\]", RegexOptions.Singleline);
-                                    if (mt.Success)
-                                    {
-                                        var nums = Regex.Matches(mt.Groups[1].Value, @"-?\d+");
-                                        if (nums.Count > 0)
-                                        {
-                                            var arr = new int[nums.Count];
-                                            for (int i = 0; i < nums.Count; i++) arr[i] = int.Parse(nums[i].Value);
-                                            // 如果长度 >= 期望则截断，否则填充
-                                            if (arr.Length >= expected)
-                                            {
-                                                var a2 = new int[expected]; Array.Copy(arr, a2, expected); data.tiles = a2;
-                                            }
-                                            else
-                                            {
-                                                // 填充
-                                                var a2 = new int[expected]; Array.Copy(arr, a2, arr.Length); data.tiles = a2;
-                                            }
-                                        }
-                                    }
+                                    data.tiles = ChunkParser.ParseTilesFallback(sanitized, expected);
                                 }
 
                                 if (needBlocking)
                                 {
-                                    var mb = Regex.Match(sanitized, @"""blocking""
-                                        \s*:\s*\[(.*?)\]", RegexOptions.Singleline);
-                                    if (mb.Success)
-                                    {
-                                        var nums = Regex.Matches(mb.Groups[1].Value, @"-?\d+");
-                                        if (nums.Count > 0)
-                                        {
-                                            var arrb = new byte[nums.Count];
-                                            for (int i = 0; i < nums.Count; i++) arrb[i] = byte.Parse(nums[i].Value);
-                                            if (arrb.Length >= expected)
-                                            {
-                                                var b2 = new byte[expected]; Array.Copy(arrb, b2, expected); data.blocking = b2;
-                                            }
-                                            else
-                                            {
-                                                var b2 = new byte[expected]; Array.Copy(arrb, b2, arrb.Length); data.blocking = b2;
-                                            }
-                                        }
-                                    }
+                                    data.blocking = ChunkParser.ParseByteArrayFallback(sanitized, "blocking", expected);
                                 }
 
                                 Debug.Log($"ChunkTemplateEditor: fallback parsed template {ta.name} tiles.len={(data.tiles!=null?data.tiles.Length:0)} blocking.len={(data.blocking!=null?data.blocking.Length:0)} expected={expected}");
@@ -179,7 +147,7 @@ namespace Editor
                         Debug.LogWarning("ChunkTemplateEditor: fallback parse failed: " + ex.Message);
                     }
 
-                    if (data == null) data = new Script.TilemapLoader.ChunkData();
+                    if (data == null) data = new TilemapLoader.ChunkData();
                     _templateDatas.Add(data);
                 }
                 catch (Exception ex)
@@ -228,14 +196,14 @@ namespace Editor
             }
         }
 
-        private Script.TileDatabase GetTileDatabase()
+        private TileDatabase GetTileDatabase()
         {
             try
             {
                 var guids = AssetDatabase.FindAssets("t:TileDatabase");
                 if (guids == null || guids.Length == 0) return null;
                 var path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                return AssetDatabase.LoadAssetAtPath<Script.TileDatabase>(path);
+                return AssetDatabase.LoadAssetAtPath<TileDatabase>(path);
             }
             catch
             {
@@ -340,7 +308,7 @@ namespace Editor
             var src = _templateDatas[index];
             if (src == null)
             {
-                _working = new Script.TilemapLoader.ChunkData();
+                _working = new TilemapLoader.ChunkData();
                 _working.width = _chunkWidth;
                 _working.height = _chunkHeight;
                 _working.tiles = new int[_chunkWidth * _chunkHeight];
@@ -352,7 +320,7 @@ namespace Editor
             }
 
             // 深拷贝到工作副本
-            _working = new Script.TilemapLoader.ChunkData();
+            _working = new TilemapLoader.ChunkData();
             _working.width = src.width;
             _working.height = src.height;
             if (src.tiles != null) _working.tiles = (int[])src.tiles.Clone(); else _working.tiles = new int[_working.width * _working.height];
@@ -671,7 +639,7 @@ namespace Editor
                 File.WriteAllText(path, json);
                 AssetDatabase.ImportAsset(path);
                 AssetDatabase.Refresh();
-                EditorUtility.DisplayDialog("Saved", "Template saved to: " + path, "OK");
+                EditorUtility.DisplayDialog("Saved", "Template w to: " + path, "OK");
                 // 重新加载模板并选中新保存的
                 LoadTemplates();
                 // 尝试按路径查找索引
