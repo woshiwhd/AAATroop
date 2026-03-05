@@ -22,6 +22,7 @@ namespace Script.Debug
 
         private void OnDrawGizmos()
         {
+            if (!DebugDisplayManager.EnableAllDebugDraws) return;
             if (!drawLoadedChunks && !drawCameraBounds) return;
 
             _chunkMgr = _chunkMgr != null ? _chunkMgr : FindObjectOfType<ChunkManager>();

@@ -42,3 +42,27 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackGround
+    uniqueID: 1761429885
+    locked: 0
+  - name: Ground
+    uniqueID: 4112355773
+    locked: 0
+  - name: BelowCharacter
+    uniqueID: 3517649055
+    locked: 0
+  - name: Mid
+    uniqueID: 254913241
+    locked: 0
+  - name: Characters
+    uniqueID: 752747535
+    locked: 0
+  - name: AboveCharacter
+    uniqueID: 227512463
+    locked: 0
+  - name: Effects
+    uniqueID: 3408325135
+    locked: 0
+  - name: UIs
+    uniqueID: 2869229755
+    locked: 0

@@ -11,24 +11,9 @@ namespace Script.Debug
     [RequireComponent(typeof(EnemyHelper))]
     public class EnemyDebugDraw : MonoBehaviour
     {
-        [Header("显示选项")]
-        [Tooltip("仅选中时绘制（否则始终绘制）")]
-        public bool drawOnlyWhenSelected = true;
-
         private void OnDrawGizmos()
         {
-            if (drawOnlyWhenSelected) return;
-            DrawInternal();
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!drawOnlyWhenSelected) return;
-            DrawInternal();
-        }
-
-        private void DrawInternal()
-        {
+            if (!DebugDisplayManager.EnableAllDebugDraws) return;
             var helper = GetComponent<EnemyHelper>();
             if (helper == null || helper.config == null) return;
 
