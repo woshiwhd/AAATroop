@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using Script.Utilities;
 
 namespace Script.VisualScripting.Units.Actions
 {
@@ -20,7 +21,7 @@ namespace Script.VisualScripting.Units.Actions
     ///     2) 或改用 Physics2D.OverlapCircleNonAlloc / spatial index 来替代全局查找；
     ///     3) 若项目中敌人较多，优先使用中央管理器（TargetManager）或分帧调度以降低峰值开销。
     /// - 为了兼容不同版本的 Visual Scripting，此 Unit 采用在控制流里用 flow.SetValue 写入 ValueOutput 的方式，而不是在 ValueOutput 的 getter 里计算，避免执行顺序与依赖性问题。
-    /// - 异常处理：内部捕获异常并记录（Debug.LogException），确保不会因为单次搜索抛异常影响整体流程。
+    /// - 异常处理：内部捕获异常并记录（GameLog.LogException），确保不会因为单次搜索抛异常影响整体流程。
     /// </summary>
     [UnitTitle("BT/Find Nearest Target")]
     [UnitCategory("BT/Action")]
@@ -95,7 +96,7 @@ namespace Script.VisualScripting.Units.Actions
                 catch (Exception ex)
                 {
                     // 捕获并记录异常，不抛出，保证图执行稳定性
-                    Debug.LogException(ex);
+                    GameLog.LogException(ex);
                 }
 
                 // 把搜索结果写入 ValueOutput，供后续单元读取

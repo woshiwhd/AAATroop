@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Script.Core;
+using Script.Utilities;
 
 namespace Script.Managers
 {
@@ -36,7 +37,7 @@ namespace Script.Managers
             TextAsset ta = await provider.LoadTextAsync(resourcePath, ct);
             if (ta == null)
             {
-                Debug.LogWarning($"TilemapLoader: resource not found at {resourcePath}");
+                GameLog.LogWarning($"TilemapLoader: resource not found at {resourcePath}");
                 return null;
             }
 
@@ -51,7 +52,7 @@ namespace Script.Managers
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"TilemapLoader: Json parse failed for {resourcePath}: {ex}");
+                GameLog.LogWarning($"TilemapLoader: Json parse failed for {resourcePath}: {ex}");
                 return null;
             }
         }

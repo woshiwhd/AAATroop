@@ -214,7 +214,7 @@ namespace Editor
         private void RefreshSceneChunkSize()
         {
             // 尝试在场景中查找 TilemapManager
-            var mgr = UnityEngine.Object.FindObjectOfType<Script.TilemapManager>();
+            var mgr = UnityEngine.Object.FindObjectOfType<Script.Managers.TilemapManager>();
             if (mgr != null)
             {
                 try

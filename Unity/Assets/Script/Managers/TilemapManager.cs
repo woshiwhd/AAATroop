@@ -32,10 +32,6 @@ namespace Script.Managers
         [Header("Update Settings")]
         [SerializeField] private float cameraMoveThreshold = 0.1f; // world units to trigger update
 
-        // 可在 Inspector 打开以输出调试日志
-        [Header("Debug")]
-        [SerializeField] private bool enableDebugLogs = false;
-
         // runtime
         private Camera _cam;
         private Vector3 _lastCamPos;
@@ -68,7 +64,7 @@ namespace Script.Managers
             if (useTemplateFallback)
             {
                 _templateLoader = new ChunkTemplateLoader();
-                _templateLoader.Initialize(chunkWidth, chunkHeight, enableDebugLogs);
+                _templateLoader.Initialize(chunkWidth, chunkHeight, false);
             }
 
             if (tileDatabase == null)
@@ -77,7 +73,7 @@ namespace Script.Managers
                 if (foundDb != null)
                 {
                     tileDatabase = foundDb;
-                    if (enableDebugLogs) Debug.Log("TilemapManager: 自动找到 TileDatabase 并赋值。");
+                    GameLog.Log("TilemapManager: 自动找到 TileDatabase 并赋值。");
                 }
                 else
                 {
@@ -92,7 +88,7 @@ namespace Script.Managers
                             if (dbAsset != null)
                             {
                                 tileDatabase = dbAsset;
-                                if (enableDebugLogs) Debug.Log($"TilemapManager: 在编辑器 AssetDatabase 中找到 TileDatabase 并赋值 ({path})");
+                                GameLog.Log($"TilemapManager: 在编辑器 AssetDatabase 中找到 TileDatabase 并赋值 ({path})");
                             }
                         }
                     }
@@ -107,7 +103,7 @@ namespace Script.Managers
                             if (arr != null && arr.Length > 0)
                             {
                                 tileDatabase = arr[0];
-                                if (enableDebugLogs) Debug.Log("TilemapManager: 从 Resources.LoadAll 中找到 TileDatabase 并赋值。");
+                                GameLog.Log("TilemapManager: 从 Resources.LoadAll 中找到 TileDatabase 并赋值。");
                             }
                         }
                         catch { }
@@ -124,7 +120,7 @@ namespace Script.Managers
                     if (tm != null)
                     {
                         targetTilemap = tm;
-                        if (enableDebugLogs) Debug.Log("TilemapManager: 在 Grid 下找到 Tilemap 并自动赋值给 targetTilemap。");
+                        GameLog.Log("TilemapManager: 在 Grid 下找到 Tilemap 并自动赋值给 targetTilemap。");
                     }
                 }
             }
@@ -134,13 +130,13 @@ namespace Script.Managers
         {
             if (targetTilemap == null)
             {
-                Debug.LogError("TilemapManager: targetTilemap 未设置。");
+                GameLog.LogError("TilemapManager: targetTilemap 未设置。");
                 enabled = false;
                 return;
             }
             if (tileDatabase == null)
             {
-                Debug.LogError("TilemapManager: tileDatabase 未设置。");
+                GameLog.LogError("TilemapManager: tileDatabase 未设置。");
                 enabled = false;
                 return;
             }
@@ -263,13 +259,13 @@ namespace Script.Managers
                         tpl.originX = chunk.x * chunkWidth;
                         tpl.originY = chunk.y * chunkHeight;
                         data = tpl;
-                        if (enableDebugLogs) Debug.Log($"TilemapManager: 使用模板填充 chunk {chunk}");
+                        GameLog.Log($"TilemapManager: 使用模板填充 chunk {chunk}");
                     }
                 }
 
                 if (data == null)
                 {
-                    if (enableDebugLogs) Debug.LogWarning($"TilemapManager: 未找到可用模板以填充 chunk {chunk}");
+                    GameLog.LogWarning($"TilemapManager: 未找到可用模板以填充 chunk {chunk}");
                     return;
                 }
             }
@@ -330,9 +326,25 @@ namespace Script.Managers
             }
             catch (Exception e)
             {
-                Debug.LogError($"TilemapManager: 加载 chunk {chunk} 时发生异常：{e}");
+                GameLog.LogError($"TilemapManager: 加载 chunk {chunk} 时发生异常：{e}");
             }
         }
+
+#if UNITY_EDITOR
+        /// <summary>供 Scene 调试绘制使用：返回已加载的 chunk 坐标。</summary>
+        public System.Collections.Generic.IEnumerable<Vector2Int> DebugGetLoadedChunkCoords()
+        {
+            if (_records == null) yield break;
+            foreach (var kv in _records)
+                if (kv.Value != null && kv.Value.state == ChunkStateEnum.Loaded)
+                    yield return kv.Key;
+        }
+
+        public Tilemap DebugGetTilemap() => targetTilemap;
+        public int DebugGetChunkWidth() => chunkWidth;
+        public int DebugGetChunkHeight() => chunkHeight;
+        public Camera DebugGetCamera() => _cam;
+#endif
 
         /// <summary>
         /// 供编辑器调试用：尝试获取已加载 chunk 的 ChunkData（若未加载或正在加载则返回 false）。

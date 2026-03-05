@@ -79,7 +79,7 @@ namespace Script.Managers
                     if (tm != null)
                     {
                         groundTilemap = tm;
-                        if (enableDebugLogs) Debug.Log("ChunkManager: 在 Grid 下找到 Tilemap 并自动赋值给 groundTilemap。");
+                        if (enableDebugLogs) GameLog.Log("ChunkManager: 在 Grid 下找到 Tilemap 并自动赋值给 groundTilemap。");
                     }
                 }
                 // 如果仍未找到，尝试查找场景中任何 Tilemap
@@ -89,7 +89,7 @@ namespace Script.Managers
                     if (any != null)
                     {
                         groundTilemap = any;
-                        if (enableDebugLogs) Debug.Log("ChunkManager: 在场景中找到 Tilemap 并赋值给 groundTilemap。");
+                        if (enableDebugLogs) GameLog.Log("ChunkManager: 在场景中找到 Tilemap 并赋值给 groundTilemap。");
                     }
                 }
             }
@@ -100,7 +100,7 @@ namespace Script.Managers
                 if (db != null)
                 {
                     tileDatabase = db;
-                    if (enableDebugLogs) Debug.Log("ChunkManager: 在场景中找到 TileDatabase 并赋值。");
+                    if (enableDebugLogs) GameLog.Log("ChunkManager: 在场景中找到 TileDatabase 并赋值。");
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace Script.Managers
                     if (res != null)
                     {
                         tileDatabase = res;
-                        if (enableDebugLogs) Debug.Log("ChunkManager: 从 Resources 加载 TileDatabase 并赋值。");
+                        if (enableDebugLogs) GameLog.Log("ChunkManager: 从 Resources 加载 TileDatabase 并赋值。");
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace Script.Managers
             if (tilemapManager != null && !useMergedMode)
             {
                 tilemapManager.SetDesiredChunks(desired);
-                if (enableDebugLogs) Debug.Log($"ChunkManager: delegated desired chunks to TilemapManager (count={desired.Count})");
+                if (enableDebugLogs) GameLog.Log($"ChunkManager: delegated desired chunks to TilemapManager (count={desired.Count})");
                 return;
             }
 
@@ -264,7 +264,7 @@ namespace Script.Managers
             }
             catch (Exception e)
             {
-                Debug.LogError($"ChunkManager: 加载 chunk ({cx}, {cy}) 失败: {e}");
+                GameLog.LogError($"ChunkManager: 加载 chunk ({cx}, {cy}) 失败: {e}");
             }
             finally
             {
@@ -272,6 +272,26 @@ namespace Script.Managers
                 _semaphore.Release();
             }
         }
+
+#if UNITY_EDITOR
+        /// <summary>供 Scene 调试绘制使用：返回已加载的 chunk 坐标。</summary>
+        public System.Collections.Generic.IEnumerable<(int cx, int cy)> DebugGetLoadedChunkCoords()
+        {
+            if (useMergedMode && _fullyLoaded != null)
+            {
+                foreach (var k in _fullyLoaded) yield return k;
+            }
+            else if (tilemapManager != null)
+            {
+                foreach (var v in tilemapManager.DebugGetLoadedChunkCoords())
+                    yield return (v.x, v.y);
+            }
+        }
+
+        public Tilemap DebugGetTilemap() => groundTilemap;
+        public int DebugGetChunkSize() => chunkSize;
+        public Camera DebugGetCamera() => mainCamera;
+#endif
 
         // UnloadChunk：卸载指定的 chunk
         // - 移除 Tilemap 上的所有瓦片

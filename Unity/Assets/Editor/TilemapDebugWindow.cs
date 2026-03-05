@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 
 // Editor window 用于配置 Tilemap 调试绘制设置（仅编辑器使用）
@@ -8,7 +8,7 @@ public class TilemapDebugWindow : EditorWindow
     public static class Settings
     {
         public static bool showIDs = true;
-        public static Script.TilemapManager targetManager = null;
+        public static Script.Managers.TilemapManager targetManager = null;
         public static float updateFrequency = 0.2f;
         // 新增设置
         public static bool showTemplateName = true;
@@ -34,7 +34,7 @@ public class TilemapDebugWindow : EditorWindow
         EditorGUI.BeginChangeCheck();
 
         Settings.showIDs = EditorGUILayout.Toggle("Show Chunk IDs", Settings.showIDs);
-        Settings.targetManager = (Script.TilemapManager)EditorGUILayout.ObjectField("Target TilemapManager", Settings.targetManager, typeof(Script.TilemapManager), true);
+        Settings.targetManager = (Script.Managers.TilemapManager)EditorGUILayout.ObjectField("Target TilemapManager", Settings.targetManager, typeof(Script.Managers.TilemapManager), true);
         Settings.updateFrequency = EditorGUILayout.FloatField("Update Frequency (s)", Settings.updateFrequency);
         if (Settings.updateFrequency < 0.05f) Settings.updateFrequency = 0.05f;
 

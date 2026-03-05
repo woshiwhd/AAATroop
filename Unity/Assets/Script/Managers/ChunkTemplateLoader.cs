@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using Script.Utilities;
 
 namespace Script.Managers
 {
@@ -31,7 +32,7 @@ namespace Script.Managers
                 var assets = Resources.LoadAll<TextAsset>(path);
                 if (assets == null || assets.Length == 0)
                 {
-                    if (_debug) Debug.Log($"ChunkTemplateLoader: 在 Resources/{path} 未发现任何 TextAsset。");
+                    if (_debug) GameLog.Log($"ChunkTemplateLoader: 在 Resources/{path} 未发现任何 TextAsset。");
                     continue;
                 }
 
@@ -44,7 +45,7 @@ namespace Script.Managers
                         string raw = ta.text ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(raw))
                         {
-                            if (_debug) Debug.LogWarning($"ChunkTemplateLoader: 资源内容为空: {ta.name}");
+                            if (_debug) GameLog.LogWarning($"ChunkTemplateLoader: 资源内容为空: {ta.name}");
                             continue;
                         }
 
@@ -65,7 +66,7 @@ namespace Script.Managers
                             string sanitized = SanitizeJson(raw);
                             if (!ReferenceEquals(sanitized, raw))
                             {
-                                if (_debug) Debug.Log($"ChunkTemplateLoader: 尝试对 {ta.name} 进行 JSON 预处理并重新解析。预处理后前200字符:\n{GetPreview(sanitized,200)}");
+                                if (_debug) GameLog.Log($"ChunkTemplateLoader: 尝试对 {ta.name} 进行 JSON 预处理并重新解析。预处理后前200字符:\n{GetPreview(sanitized,200)}");
                             }
 
                             try
@@ -77,7 +78,7 @@ namespace Script.Managers
                                 // 解析仍失败，打印详细提示与片段，帮助用户定位 JSON 问题
                                 if (_debug)
                                 {
-                                    Debug.LogWarning($"ChunkTemplateLoader: 解析模板出错 {ta.name}: {ex}\n-- 文件内容预览（前1000字符） --\n{GetPreview(raw,1000)}\n-- 建议：检查 JSON 是否为有效的 Unity JsonUtility 支持格式（使用双引号、无尾随逗号、无注释），并确认字段名匹配 ChunkData 的定义。\n");
+                                    GameLog.LogWarning($"ChunkTemplateLoader: 解析模板出错 {ta.name}: {ex}\n-- 文件内容预览（前1000字符） --\n{GetPreview(raw,1000)}\n-- 建议：检查 JSON 是否为有效的 Unity JsonUtility 支持格式（使用双引号、无尾随逗号、无注释），并确认字段名匹配 ChunkData 的定义。\n");
                                 }
                                 continue;
                             }
@@ -85,13 +86,13 @@ namespace Script.Managers
 
                         if (chunk == null)
                         {
-                            if (_debug) Debug.LogWarning($"ChunkTemplateLoader: 解析模板失败 (null): {ta.name}");
+                            if (_debug) GameLog.LogWarning($"ChunkTemplateLoader: 解析模板失败 (null): {ta.name}");
                             continue;
                         }
 
                         if (chunk.width != expectedWidth || chunk.height != expectedHeight)
                         {
-                            if (_debug) Debug.LogWarning($"ChunkTemplateLoader: 模板尺寸不匹配 ({ta.name}): {chunk.width}x{chunk.height} != expected {expectedWidth}x{expectedHeight}");
+                            if (_debug) GameLog.LogWarning($"ChunkTemplateLoader: 模板尺寸不匹配 ({ta.name}): {chunk.width}x{chunk.height} != expected {expectedWidth}x{expectedHeight}");
                             continue;
                         }
 
@@ -103,12 +104,12 @@ namespace Script.Managers
                     }
                     catch (System.Exception ex)
                     {
-                        if (_debug) Debug.LogWarning($"ChunkTemplateLoader: 解析模板出错 {ta.name}: {ex}");
+                        if (_debug) GameLog.LogWarning($"ChunkTemplateLoader: 解析模板出错 {ta.name}: {ex}");
                     }
                 }
              }
 
-            if (_debug) Debug.Log($"ChunkTemplateLoader: 已加载 {_templates.Count} 个模板 (总计 {totalLoaded} 文件)。");
+            if (_debug) GameLog.Log($"ChunkTemplateLoader: 已加载 {_templates.Count} 个模板 (总计 {totalLoaded} 文件)。");
         }
 
         /// <summary>
