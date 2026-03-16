@@ -4,17 +4,17 @@ using Script;
 namespace Script.Debug
 {
     /// <summary>
-    /// 编辑器中绘制敌人调试信息（视野、攻击范围、巡逻点、到玩家的连线）。
-    /// 挂在带 EnemyHelper 的敌人上；仅 Scene 视图可见。
+    /// 编辑器中绘制敌人调试信息（视野、攻击范围、巡逻点、到当前目标的连线）。
+    /// 挂在带 UnitCombatAI 的单位上；仅 Scene 视图可见。
     /// </summary>
     [ExecuteAlways]
-    [RequireComponent(typeof(EnemyHelper))]
+    [RequireComponent(typeof(UnitCombatAI))]
     public class EnemyDebugDraw : MonoBehaviour
     {
         private void OnDrawGizmos()
         {
             if (!DebugDisplayManager.EnableAllDebugDraws) return;
-            var helper = GetComponent<EnemyHelper>();
+            var helper = GetComponent<UnitCombatAI>();
             if (helper == null || helper.config == null) return;
 
             var pos = transform.position;
@@ -28,11 +28,11 @@ namespace Script.Debug
             Gizmos.color = new Color(1f, 0f, 0f, 0.4f);
             DrawCircleXy(pos, helper.config.attackRange, 16, z);
 
-            // 到玩家的连线（黄色）
-            if (helper.player != null)
+            // 到当前目标的连线（黄色）
+            if (helper.CurrentTarget != null && helper.CurrentTarget.Transform != null)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(pos, helper.player.position);
+                Gizmos.DrawLine(pos, helper.CurrentTarget.Transform.position);
             }
 
             // 巡逻点与路径（青色）

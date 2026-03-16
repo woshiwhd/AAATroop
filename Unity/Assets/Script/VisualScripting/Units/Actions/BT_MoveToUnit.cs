@@ -1,4 +1,4 @@
-﻿using Unity.VisualScripting;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Script.VisualScripting.Units.Actions
@@ -28,20 +28,8 @@ namespace Script.VisualScripting.Units.Actions
 
                 if (selfGo != null)
                 {
-                    Vector3 dir3 = target - selfGo.transform.position;
-                    if (dir3.sqrMagnitude > 0.001f)
-                    {
-                        Vector3 dirNorm = dir3.normalized;
-                        var rb = selfGo.GetComponent<Rigidbody2D>();
-                        if (rb != null)
-                        {
-                            rb.velocity = new Vector2(dirNorm.x, dirNorm.y) * spd;
-                        }
-                        else
-                        {
-                            selfGo.transform.position = Vector3.MoveTowards(selfGo.transform.position, target, spd * Time.deltaTime);
-                        }
-                    }
+                    selfGo.transform.position = Vector3.MoveTowards(
+                        selfGo.transform.position, target, spd * Time.deltaTime);
                 }
 
                 return _out;
