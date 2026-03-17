@@ -134,6 +134,16 @@ namespace Script.Managers
         /// </summary>
         public void SetDesiredChunks(IEnumerable<Vector2Int> desired)
         {
+            // 增量算法：只做“缺的补上，不要的卸载”。
+            //
+            // - desiredSet：这一帧应该存在于内存/Tilemap 的 chunk 集合
+            // - _records：当前 TilemapManager 维护的 chunk 状态表（Loading/Loaded/Unloading）
+            //
+            // 流程：
+            // 1) desired 中不存在于 _records 的 chunk -> StartLoadChunk（异步加载+写 Tilemap）
+            // 2) unloadOutOfView 为 true 时，把 _records 中但不在 desired 的 chunk -> UnloadChunk（清瓦片并移除记录）
+            //
+            // 复杂度：O(|desired| + |_records|)。为了避免遍历中修改字典抛异常，卸载时使用 keysCopy 副本遍历。
             var desiredSet = desired as HashSet<Vector2Int> ?? new HashSet<Vector2Int>(desired);
             foreach (var chunk in desiredSet)
             {
@@ -155,6 +165,9 @@ namespace Script.Managers
 
         private void StartLoadChunk(Vector2Int chunk)
         {
+            // 状态机：同一 chunk 同一时刻只允许一个有效的加载任务。
+            // - Loading/Loaded：说明已有任务或已完成，直接返回
+            // - Unloading：说明正在卸载（或刚卸载），也不重复启动
             if (_records.TryGetValue(chunk, out var existRec))
             {
                 if (existRec.state == ChunkStateEnum.Unloading) return;
@@ -170,6 +183,9 @@ namespace Script.Managers
 
         private async UniTask LoadChunkInternal(Vector2Int chunk, int generation, CancellationToken ct)
         {
+            // generation 用于避免“旧任务晚到覆盖新任务”的竞态：
+            // - 每次 StartLoadChunk 都会递增 generation
+            // - 任务中途若发现 generation 不匹配，说明已经有更新的任务启动，当前任务应直接退出
             ChunkRecord rec;
             if (!_records.TryGetValue(chunk, out rec)) return;
             if (rec.generation != generation) return;
@@ -208,6 +224,7 @@ namespace Script.Managers
 
             try
             {
+                // 写 Tilemap（主线程）：逐 tile 写入，并用 tilesPerFrame 做分帧节流，避免单帧卡顿。
                 int w = data.width;
                 int h = data.height;
                 int count = 0;
@@ -293,6 +310,10 @@ namespace Script.Managers
         {
             if (!_records.TryGetValue(chunk, out var rec)) return;
 
+            // 卸载算法：取消加载（如果还在 Loading），然后把该 chunk 覆盖范围内的 Tilemap 区域整块清空。
+            //
+            // 说明：清空使用 SetTilesBlock(bounds, clearBuffer)（clearBuffer 为全 null 的 TileBase[]）。
+            // 相比逐格 SetTile(null)，这是 O(ChunkSize) 的连续写入，性能更稳定。
             if (rec.state == ChunkStateEnum.Loading && rec.cts != null)
                 rec.cts.Cancel();
 
