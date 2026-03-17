@@ -21,16 +21,23 @@ public class TilemapDebugWindow : EditorWindow
     {
         var w = GetWindow<TilemapDebugWindow>("Tilemap Debug");
         w.minSize = new Vector2(240, 160);
+        ProjectEditorTools.OpenMainScene();
     }
 
     private void OnEnable()
     {
-        // nothing for now
+        ProjectEditorTools.OpenMainScene();
     }
 
     private void OnGUI()
     {
         EditorGUILayout.LabelField("Tilemap Debugger", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Open Main Scene"))
+        {
+            ProjectEditorTools.OpenMainScene();
+        }
+
         EditorGUI.BeginChangeCheck();
 
         Settings.showIDs = EditorGUILayout.Toggle("Show Chunk IDs", Settings.showIDs);
@@ -62,4 +69,5 @@ public class TilemapDebugWindow : EditorWindow
 
         EditorGUILayout.HelpBox("仅在编辑器 Scene 视图中绘制 chunk id（安全、不会影响运行时发布）。\n先只显示 chunk id，后续可按需扩展显示 tile 属性。", MessageType.Info);
     }
+
 }

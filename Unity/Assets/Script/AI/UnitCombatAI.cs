@@ -223,7 +223,6 @@ namespace Script
         public void AcquireTarget(float radius)
         {
             if (radius <= 0f) return;
-            GameLog.LogError($"{name} _currentTarget1: {_currentTarget}");
             var hits = Physics2D.OverlapCircleAll(transform.position, radius);
             ICombatUnit best = null;
             float bestSqrDist = float.MaxValue;
@@ -247,7 +246,6 @@ namespace Script
             }
 
             _currentTarget = best;
-            GameLog.LogError($"{name} _currentTarget2: {_currentTarget}");
         }
 
         public void ClearTarget()

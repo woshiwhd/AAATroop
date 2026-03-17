@@ -9,11 +9,9 @@ using Script.Utilities;
 namespace Script.Managers
 {
     /// <summary>
-    /// TilemapManager: 按摄像机视野按块异步加载 Tile 数据（依赖 TilemapLoader）并维护已加载块集合。
-    /// - 自动使用 ResourcesProvider 作为默认的 IResourceProvider（如果需要自定义 provider，可扩展）。
-    /// - 支持取消正在加载的块以及视野外卸载。
-    /// - chunkPathFormat 默认格式为 "chunks/chunk_{0}_{1}"（不含扩展名），可在 Inspector 中修改以匹配导出资源命名。
-    /// 注意：假设每个块导出为一个 JSON 文本资源，使用 provider.LoadTextAsync(path) 来加载。
+    /// TilemapManager：地图系统的“加载/写入层”。
+    /// - 仅通过 ChunkManager 传入的 desired chunks（SetDesiredChunks）驱动加载/卸载
+    /// - 负责：异步加载 ChunkData（TilemapLoader/模板回退）并写入 Tilemap；视野外卸载并清瓦片
     /// </summary>
     public class TilemapManager : MonoBehaviour
     {
@@ -25,17 +23,8 @@ namespace Script.Managers
         [Header("Chunk Settings")]
         [SerializeField] private int chunkWidth = 32;
         [SerializeField] private int chunkHeight = 32;
-        [SerializeField] private int viewPaddingChunks = 1;
         [SerializeField] private int tilesPerFrame = 256;
         [SerializeField] private bool unloadOutOfView = true;
-
-        [Header("Update Settings")]
-        [SerializeField] private float cameraMoveThreshold = 0.1f; // world units to trigger update
-
-        // runtime
-        private Camera _cam;
-        private Vector3 _lastCamPos;
-        private bool _refreshing;
 
         // chunk 状态记录：统一管理每个 chunk 的 state/cts/generation
         private enum ChunkStateEnum { Loading, Loaded, Unloading }
@@ -58,8 +47,6 @@ namespace Script.Managers
         void Awake()
         {
             if (targetTilemap == null) targetTilemap = GetComponent<Tilemap>();
-            _cam = Camera.main;
-            _lastCamPos = _cam ? _cam.transform.position : Vector3.zero;
 
             if (useTemplateFallback)
             {
@@ -139,67 +126,6 @@ namespace Script.Managers
                 GameLog.LogError("TilemapManager: tileDatabase 未设置。");
                 enabled = false;
                 return;
-            }
-
-            RefreshVisibleChunks().Forget();
-        }
-
-        void Update()
-        {
-            if (_cam == null) return;
-            if (_refreshing) return; // 避免多份并发导致遍历 _records 时被 UnloadChunk 修改而抛异常
-            _refreshing = true;
-            RefreshVisibleChunks().Forget();
-        }
-
-        private async UniTask RefreshVisibleChunks()
-        {
-            try
-            {
-                float zDistance = Math.Abs(_cam.transform.position.z - targetTilemap.transform.position.z);
-                Vector3 bottomLeft = _cam.ScreenToWorldPoint(new Vector3(0f, 0f, zDistance));
-                Vector3 topRight = _cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, zDistance));
-
-                Vector3Int cellBL = targetTilemap.WorldToCell(bottomLeft);
-                Vector3Int cellTR = targetTilemap.WorldToCell(topRight);
-
-                int minChunkX = Mathf.FloorToInt((float)cellBL.x / chunkWidth) - viewPaddingChunks;
-                int maxChunkX = Mathf.FloorToInt((float)cellTR.x / chunkWidth) + viewPaddingChunks;
-                int minChunkY = Mathf.FloorToInt((float)cellBL.y / chunkHeight) - viewPaddingChunks;
-                int maxChunkY = Mathf.FloorToInt((float)cellTR.y / chunkHeight) + viewPaddingChunks;
-
-                var desired = new HashSet<Vector2Int>();
-                for (int cx = minChunkX; cx <= maxChunkX; cx++)
-                {
-                    for (int cy = minChunkY; cy <= maxChunkY; cy++)
-                    {
-                        desired.Add(new Vector2Int(cx, cy));
-                    }
-                }
-
-                foreach (var chunk in desired)
-                {
-                    if (_records.ContainsKey(chunk)) continue;
-                    StartLoadChunk(chunk);
-                }
-
-                if (unloadOutOfView)
-                {
-                    var toUnload = new List<Vector2Int>();
-                    var keysCopy = new List<Vector2Int>(_records.Keys); // 副本遍历，避免 UnloadChunk 修改 _records 时抛 InvalidOperationException
-                    foreach (var k in keysCopy)
-                    {
-                        if (!desired.Contains(k)) toUnload.Add(k);
-                    }
-                    foreach (var chunk in toUnload)
-                        UnloadChunk(chunk);
-                }
-
-                await UniTask.Yield();
-            }
-            finally
-            {
-                _refreshing = false;
             }
         }
 
@@ -343,7 +269,7 @@ namespace Script.Managers
         public Tilemap DebugGetTilemap() => targetTilemap;
         public int DebugGetChunkWidth() => chunkWidth;
         public int DebugGetChunkHeight() => chunkHeight;
-        public Camera DebugGetCamera() => _cam;
+        public Camera DebugGetCamera() => Camera.main;
 #endif
 
         /// <summary>
