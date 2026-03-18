@@ -43,6 +43,8 @@ namespace Editor
         // 绘制
         private int _selectedTileId = 0;
         private bool _paintBlocking = false;
+        /// <summary>0=主层+阻挡, 1=地表</summary>
+        private int _editLayer = 0;
 
         // 瓷砖数据库
         private TileDatabase _tileDb = null;
@@ -55,6 +57,7 @@ namespace Editor
         // 简单快照用于撤销全部
         private int[] _snapshotTiles = null;
         private byte[] _snapshotBlocking = null;
+        private int[] _snapshotGround = null;
 
         [MenuItem("Tools/Map/Chunk Template Editor")]
         public static void OpenWindow()
@@ -125,20 +128,16 @@ namespace Editor
                         {
                             bool needTiles = data.tiles == null || data.tiles.Length != expected;
                             bool needBlocking = data.blocking == null || data.blocking.Length != expected;
-                            if (needTiles || needBlocking)
+                            bool needGround = data.ground == null || data.ground.Length != expected;
+                            if (needTiles || needBlocking || needGround)
                             {
-                                // 尝试从文本中提取 tiles 数字
                                 if (needTiles)
-                                {
                                     data.tiles = ChunkParser.ParseTilesFallback(sanitized, expected);
-                                }
-
                                 if (needBlocking)
-                                {
                                     data.blocking = ChunkParser.ParseByteArrayFallback(sanitized, "blocking", expected);
-                                }
-
-                                Debug.Log($"ChunkTemplateEditor: fallback parsed template {ta.name} tiles.len={(data.tiles!=null?data.tiles.Length:0)} blocking.len={(data.blocking!=null?data.blocking.Length:0)} expected={expected}");
+                                if (needGround)
+                                    data.ground = ChunkParser.ParseIntArrayFallback(sanitized, "ground", expected);
+                                Debug.Log($"ChunkTemplateEditor: fallback parsed template {ta.name} tiles.len={(data.tiles!=null?data.tiles.Length:0)} blocking.len={(data.blocking!=null?data.blocking.Length:0)} ground.len={(data.ground!=null?data.ground.Length:0)} expected={expected}");
                             }
                         }
                     }
@@ -375,8 +374,10 @@ namespace Editor
                 _working = new TilemapLoader.ChunkData();
                 _working.width = _chunkWidth;
                 _working.height = _chunkHeight;
-                _working.tiles = new int[_chunkWidth * _chunkHeight];
-                _working.blocking = new byte[_chunkWidth * _chunkHeight];
+                int len = _chunkWidth * _chunkHeight;
+                _working.tiles = new int[len];
+                _working.blocking = new byte[len];
+                _working.ground = new int[len];
                 _saveName = _templateAssets[index] != null ? _templateAssets[index].name : "new_chunk";
 
                 Debug.Log($"ChunkTemplateEditor: Selected template index {index} is null -> created blank working (chunk {_chunkWidth}x{_chunkHeight}).");
@@ -387,8 +388,10 @@ namespace Editor
             _working = new TilemapLoader.ChunkData();
             _working.width = src.width;
             _working.height = src.height;
-            if (src.tiles != null) _working.tiles = (int[])src.tiles.Clone(); else _working.tiles = new int[_working.width * _working.height];
-            if (src.blocking != null) _working.blocking = (byte[])src.blocking.Clone(); else _working.blocking = new byte[_working.width * _working.height];
+            int total = _working.width * _working.height;
+            if (src.tiles != null) _working.tiles = (int[])src.tiles.Clone(); else _working.tiles = new int[total];
+            if (src.blocking != null) _working.blocking = (byte[])src.blocking.Clone(); else _working.blocking = new byte[total];
+            if (src.ground != null) _working.ground = (int[])src.ground.Clone(); else _working.ground = new int[total];
             _working.templateName = src.templateName;
             _working.originX = src.originX;
             _working.originY = src.originY;
@@ -423,6 +426,7 @@ namespace Editor
             if (_working == null) return;
             _snapshotTiles = (int[])_working.tiles.Clone();
             if (_working.blocking != null) _snapshotBlocking = (byte[])_working.blocking.Clone(); else _snapshotBlocking = null;
+            if (_working.ground != null) _snapshotGround = (int[])_working.ground.Clone(); else _snapshotGround = null;
         }
 
         private void RestoreSnapshot()
@@ -430,6 +434,20 @@ namespace Editor
             if (_working == null || _snapshotTiles == null) return;
             _working.tiles = (int[])_snapshotTiles.Clone();
             if (_snapshotBlocking != null) _working.blocking = (byte[])_snapshotBlocking.Clone();
+            if (_snapshotGround != null) _working.ground = (int[])_snapshotGround.Clone();
+        }
+
+        private void EnsureGroundArray(int expected)
+        {
+            if (_working == null || expected <= 0) return;
+            if (_working.ground == null)
+                _working.ground = new int[expected];
+            else if (_working.ground.Length != expected)
+            {
+                var nb = new int[expected];
+                Array.Copy(_working.ground, nb, Math.Min(_working.ground.Length, expected));
+                _working.ground = nb;
+            }
         }
 
         private void DrawRightPanel()
@@ -502,12 +520,24 @@ namespace Editor
                     EditorGUILayout.EndHorizontal();
                 }
 
-                EditorGUILayout.HelpBox("操作提示：左键绘制当前 Brush Tile ID；右键切换阻挡（blocking）。阻挡格子会显示红色背景，空格显示为 B。", MessageType.Info);
+                // 编辑层切换
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("编辑层:", GUILayout.Width(50));
+                EditorGUI.BeginChangeCheck();
+                _editLayer = GUILayout.Toolbar(_editLayer, new[] { "主层+阻挡", "地表" });
+                if (EditorGUI.EndChangeCheck()) Repaint();
+                EditorGUILayout.EndHorizontal();
+
+                string tip = _editLayer == 0
+                    ? "主层+阻挡：左键绘制 Tile ID，右键切换阻挡。阻挡显示红色/B。"
+                    : "地表：左键绘制地表 Tile ID，右键清空(0)。";
+                EditorGUILayout.HelpBox(tip, MessageType.Info);
 
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
 
                 int w = _working.width;
                 int h = _working.height;
+                EnsureGroundArray(w * h);
 
                 // 网格
                 for (int y = 0; y < h; y++)
@@ -516,29 +546,46 @@ namespace Editor
                     for (int x = 0; x < w; x++)
                     {
                         int idx = y * w + x;
-                        int id = 0;
-                        if (_working.tiles != null && idx < _working.tiles.Length) id = _working.tiles[idx];
-                        byte b = 0;
-                        if (_working.blocking != null && idx < _working.blocking.Length) b = _working.blocking[idx];
-
                         GUIStyle btnStyle = new GUIStyle(GUI.skin.button) {fixedWidth = 28, fixedHeight = 20};
-                        string lbl = id == 0 ? (b != 0 ? "B" : "-") : id.ToString();
+                        string lbl;
                         var prevColor = GUI.backgroundColor;
-                        if (b != 0) GUI.backgroundColor = Color.red * 0.6f + Color.white * 0.4f;
+
+                        if (_editLayer == 0)
+                        {
+                            int id = 0;
+                            if (_working.tiles != null && idx < _working.tiles.Length) id = _working.tiles[idx];
+                            byte b = 0;
+                            if (_working.blocking != null && idx < _working.blocking.Length) b = _working.blocking[idx];
+                            lbl = id == 0 ? (b != 0 ? "B" : "-") : id.ToString();
+                            if (b != 0) GUI.backgroundColor = Color.red * 0.6f + Color.white * 0.4f;
+                        }
+                        else
+                        {
+                            int gid = 0;
+                            if (_working.ground != null && idx < _working.ground.Length) gid = _working.ground[idx];
+                            lbl = gid == 0 ? "-" : gid.ToString();
+                            if (gid != 0) GUI.backgroundColor = new Color(0.6f, 0.85f, 0.6f); // 地表浅绿
+                        }
+
                         if (GUILayout.Button(lbl, btnStyle))
                         {
-                            // 左键行为由 Event 处理
                             var e = Event.current;
-                            if (e.button == 0)
+                            if (_editLayer == 0)
                             {
-                                // 绘制 tile id
-                                _working.tiles[idx] = _selectedTileId;
+                                if (e.button == 0)
+                                    _working.tiles[idx] = _selectedTileId;
+                                else if (e.button == 1)
+                                {
+                                    if (_working.blocking == null) _working.blocking = new byte[w * h];
+                                    _working.blocking[idx] = (byte)(_working.blocking[idx] == 0 ? 1 : 0);
+                                }
                             }
-                            else if (e.button == 1)
+                            else
                             {
-                                // 切换阻挡
-                                if (_working.blocking == null) _working.blocking = new byte[w * h];
-                                _working.blocking[idx] = (byte)(_working.blocking[idx] == 0 ? 1 : 0);
+                                if (e.button == 0)
+                                    _working.ground[idx] = _selectedTileId;
+                                else if (e.button == 1)
+                                    _working.ground[idx] = 0;
                             }
                         }
                         GUI.backgroundColor = prevColor;
@@ -616,6 +663,7 @@ namespace Editor
             int h = _chunkHeight;
             var newTiles = new int[w * h];
             var newBlocking = new byte[w * h];
+            var newGround = new int[w * h];
             for (int y = 0; y < Math.Min(_working.height, h); y++)
             {
                 for (int x = 0; x < Math.Min(_working.width, w); x++)
@@ -624,12 +672,14 @@ namespace Editor
                     int dIdx = y * w + x;
                     newTiles[dIdx] = _working.tiles != null && sIdx < _working.tiles.Length ? _working.tiles[sIdx] : 0;
                     newBlocking[dIdx] = _working.blocking != null && sIdx < _working.blocking.Length ? _working.blocking[sIdx] : (byte)0;
+                    newGround[dIdx] = _working.ground != null && sIdx < _working.ground.Length ? _working.ground[sIdx] : 0;
                 }
             }
             _working.width = w;
             _working.height = h;
             _working.tiles = newTiles;
             _working.blocking = newBlocking;
+            _working.ground = newGround;
         }
 
         private void CropPadWorkingToChunkSize()
@@ -642,7 +692,15 @@ namespace Editor
         {
             if (_working == null) return;
             int len = _working.width * _working.height;
-            for (int i = 0; i < len; i++) _working.tiles[i] = id;
+            if (_editLayer == 0)
+            {
+                for (int i = 0; i < len; i++) _working.tiles[i] = id;
+            }
+            else
+            {
+                EnsureGroundArray(len);
+                for (int i = 0; i < len; i++) _working.ground[i] = id;
+            }
         }
 
         private void ClearWorking()
@@ -651,6 +709,7 @@ namespace Editor
             int len = _working.width * _working.height;
             for (int i = 0; i < len; i++) _working.tiles[i] = 0;
             if (_working.blocking != null) for (int i = 0; i < len; i++) _working.blocking[i] = 0;
+            if (_working.ground != null) for (int i = 0; i < len; i++) _working.ground[i] = 0;
         }
 
         private void ShowTilePicker()
@@ -728,7 +787,6 @@ namespace Editor
 
         private bool ValidateAndFixWorkingForSave()
         {
-            // 验证
             int expected = _working.width * _working.height;
             if (_working.tiles == null || _working.tiles.Length != expected)
             {
@@ -736,15 +794,14 @@ namespace Editor
                 return false;
             }
             if (_working.blocking == null)
-            {
                 _working.blocking = new byte[expected];
-            }
             else if (_working.blocking.Length != expected)
             {
                 var nb = new byte[expected];
                 Array.Copy(_working.blocking, nb, Math.Min(_working.blocking.Length, expected));
                 _working.blocking = nb;
             }
+            EnsureGroundArray(expected);
             return true;
         }
 

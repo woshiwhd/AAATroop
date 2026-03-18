@@ -125,6 +125,7 @@ namespace Script.Managers
             copy.height = t.height;
             if (t.tiles != null) copy.tiles = (int[])t.tiles.Clone();
             if (t.blocking != null) copy.blocking = (byte[])t.blocking.Clone();
+            if (t.ground != null) copy.ground = (int[])t.ground.Clone();
             copy.originX = t.originX;
             copy.originY = t.originY;
             // 复制模板名用于调试显示

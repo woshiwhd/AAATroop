@@ -17,6 +17,7 @@ namespace Script.Managers
     {
         [Header("References")]
         [SerializeField] private Tilemap targetTilemap;
+        [SerializeField] private Tilemap groundTilemap;
         [SerializeField] private Tilemap blockingTilemap;
         [SerializeField] private TileDatabase tileDatabase;
 
@@ -108,6 +109,23 @@ namespace Script.Managers
                     {
                         targetTilemap = tm;
                         GameLog.Log("TilemapManager: 在 Grid 下找到 Tilemap 并自动赋值给 targetTilemap。");
+                    }
+                }
+            }
+
+            if (groundTilemap == null)
+            {
+                var grid = GameObject.Find("Grid");
+                if (grid != null)
+                {
+                    foreach (var c in grid.GetComponentsInChildren<Tilemap>(true))
+                    {
+                        if (c.gameObject.name.ToLower().Contains("ground") || c.gameObject.name.ToLower().Contains("地表"))
+                        {
+                            groundTilemap = c;
+                            GameLog.Log("TilemapManager: 在 Grid 下找到地表 Tilemap 并赋值给 groundTilemap。");
+                            break;
+                        }
                     }
                 }
             }
@@ -241,6 +259,13 @@ namespace Script.Managers
                         Vector3Int cell = new Vector3Int(data.originX + x, data.originY + y, 0);
                         targetTilemap.SetTile(cell, tile);
 
+                        if (groundTilemap != null && data.ground != null && idx < data.ground.Length)
+                        {
+                            int gid = data.ground[idx];
+                            TileBase groundTile = tileDatabase.GetTileById(gid);
+                            groundTilemap.SetTile(cell, groundTile);
+                        }
+
                         if (blockingTilemap != null && data.blocking != null && idx < data.blocking.Length)
                         {
                             byte b = data.blocking[idx];
@@ -324,6 +349,8 @@ namespace Script.Managers
             var bounds = new BoundsInt(chunk.x * chunkWidth, chunk.y * chunkHeight, 0, chunkWidth, chunkHeight, 1);
             if (targetTilemap != null)
                 targetTilemap.SetTilesBlock(bounds, _clearTilesBuffer);
+            if (groundTilemap != null)
+                groundTilemap.SetTilesBlock(bounds, _clearTilesBuffer);
             if (blockingTilemap != null)
                 blockingTilemap.SetTilesBlock(bounds, _clearTilesBuffer);
 

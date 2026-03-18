@@ -47,6 +47,26 @@ namespace Script.Managers
             return result;
         }
 
+        // 从 sanitized 文本中提取指定 key 的 int 数组（用于 ground 等），不足填 0，多余截断
+        public static int[] ParseIntArrayFallback(string sanitized, string key, int expected)
+        {
+            var result = new int[Math.Max(0, expected)];
+            if (expected <= 0 || string.IsNullOrEmpty(sanitized) || string.IsNullOrEmpty(key)) return result;
+
+            string keyEscaped = Regex.Escape(key);
+            string pattern = "\"" + keyEscaped + "\"" + @"\s*:\s*\[(.*?)\]";
+            var m = Regex.Match(sanitized, pattern, RegexOptions.Singleline);
+            if (!m.Success) return result;
+
+            var nums = Regex.Matches(m.Groups[1].Value, "-?\\d+");
+            int take = Math.Min(nums.Count, expected);
+            for (int i = 0; i < take; i++)
+            {
+                if (!int.TryParse(nums[i].Value, out result[i])) result[i] = 0;
+            }
+            return result;
+        }
+
         // 示例用法
         public static void Example()
         {

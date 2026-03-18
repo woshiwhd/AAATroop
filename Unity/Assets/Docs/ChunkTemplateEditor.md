@@ -7,7 +7,7 @@
 - **入口**：Unity 菜单 `Tools/Map/Chunk Template Editor`
 - **主要用途**：
   - 从 `Resources/chunk_templates` 加载 **JSON 块模板**
-  - 编辑每格的 **tile id（int）** 与 **blocking（byte：0/1）**
+  - 编辑每格的 **tile id（主层）**、**blocking（0/1）**、**地表 ground（tile id）**
   - `Save As` 写入 `Assets/Resources/chunk_templates/{name}.json`
 
 实现文件：`Assets/Editor/ChunkTemplateEditorWindow.cs`
@@ -20,7 +20,7 @@
 - **加载方式**：`Resources.LoadAll<TextAsset>("chunk_templates")`
 - **数据结构**：解析为 `TilemapLoader.ChunkData`
 
-说明：模板 JSON 里存的是数组（`tiles[]`、`blocking[]`），编辑器网格里显示的数字就是 `tile id`。
+说明：模板 JSON 里存的是数组（`tiles[]`、`blocking[]`、`ground[]`），编辑器网格里显示的数字就是对应层的 `tile id`。
 
 ---
 
@@ -63,23 +63,27 @@ Chunk 模板编辑器不直接存 `TileBase` 引用，而是存 **tile id**。`t
 
 ### 2）中间：网格编辑区（核心）
 
-按钮显示规则：
+顶部 **编辑层** 切换：
 
-- `-`：tile id=0 且不阻挡
-- `B`：tile id=0 但阻挡（blocking=1）
-- `数字`：tile id（例如 12）
+- **主层+阻挡**：编辑主 Tilemap 的 tile id 与阻挡。`-` = 空，`B` = 阻挡，数字 = tile id；左键绘制 tile，右键切换阻挡（红色/B）。
+- **地表**：编辑地表层（Tilemap_Ground）的 tile id。`-` = 空(0)，数字 = 地表 tile id；左键绘制，右键清空为 0；有地表时格子显示浅绿背景。
 
-鼠标操作：
+鼠标操作（主层+阻挡）：
 
-- **左键点击格子**：设置该格子的 `tile id = Brush Tile ID`
-- **右键点击格子**：切换 `blocking` 0/1（红色背景表示阻挡）
+- **左键**：设置该格 `tile id = Brush Tile ID`
+- **右键**：切换 `blocking` 0/1
+
+鼠标操作（地表）：
+
+- **左键**：设置该格 `ground id = Brush Tile ID`
+- **右键**：清空地表（设为 0）
 
 ### 3）工具栏
 
 - **Brush Tile ID**：当前画笔 id
 - **Pick From DB**：从 TileDatabase 的 tile 列表中挑选（本质是选 id）
-- **Fill**：用当前 id 填满整个模板
-- **Clear**：全部清空为 0；blocking 清空为 0
+- **Fill**：用当前 Brush ID 填满当前编辑层（主层填 tiles，地表填 ground）
+- **Clear**：全部清空（tiles、blocking、ground 均为 0）
 - **Undo Changes**：恢复选中模板时的快照（整体撤销）
 
 ### 4）右侧：Palette（调色板）
@@ -89,7 +93,12 @@ Chunk 模板编辑器不直接存 `TileBase` 引用，而是存 **tile id**。`t
 
 ---
 
-## 六、保存（Save As）与文件落点
+## 六、运行时与地表层
+
+- 保存的 JSON 包含 `ground` 数组。运行时 **TilemapManager** 会将 `ChunkData.ground` 写入 **groundTilemap**（地表层）。
+- 场景中需有地表 Tilemap（建议命名为 `Tilemap_Ground` 或名称含 "Ground"/"地表"），TilemapManager 会尝试自动查找并赋值；也可在 Inspector 手动指定 **Ground Tilemap**。
+
+## 七、保存（Save As）与文件落点
 
 - **保存目录**：`Assets/Resources/chunk_templates/`
 - **保存文件**：`{Save Name}.json`
@@ -101,7 +110,7 @@ Chunk 模板编辑器不直接存 `TileBase` 引用，而是存 **tile id**。`t
 
 ---
 
-## 七、新增一个 Tile 应该在哪里加？（强烈建议按此流程）
+## 八、新增一个 Tile 应该在哪里加？（强烈建议按此流程）
 
 1. 先创建 Tile 资源（或 RuleTile）：
    - `Create -> 2D -> Tiles -> Tile`（或 RuleTile）
@@ -112,7 +121,7 @@ Chunk 模板编辑器不直接存 `TileBase` 引用，而是存 **tile id**。`t
 
 ---
 
-## 八、常见问题（FAQ）
+## 九、常见问题（FAQ）
 
 - **Q：为什么我在编辑器里看不到某个 tile？**
   - **A**：检查 `TileDatabase.tiles` 是否包含它；Palette 只来自 TileDatabase。
