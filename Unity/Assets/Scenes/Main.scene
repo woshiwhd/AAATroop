@@ -1007,7 +1007,7 @@ Transform:
   m_GameObject: {fileID: 1083090148}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.2, y: 10.21, z: 0}
+  m_LocalPosition: {x: 14.53, y: 4.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1213,6 +1213,8 @@ MonoBehaviour:
   faction: 2
   initialTarget: {fileID: 0}
   patrolPoints: []
+  rotateToMoveDirection2D: 0
+  facingAngleOffset: 0
 --- !u!1 &1239930850
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,10 +1265,8 @@ MonoBehaviour:
   tileDatabase: {fileID: 0}
   chunkWidth: 32
   chunkHeight: 32
-  viewPaddingChunks: 1
   tilesPerFrame: 256
   unloadOutOfView: 1
-  cameraMoveThreshold: 0.1
   useTemplateFallback: 1
 --- !u!1 &1345753289
 GameObject:
@@ -1550,18 +1550,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be5b36a71e96460a976f5c208e99561b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileDatabase: {fileID: 0}
-  groundTilemap: {fileID: 0}
-  blockingTilemap: {fileID: 0}
   mainCamera: {fileID: 0}
+  groundTilemap: {fileID: 0}
+  tilemapManager: {fileID: 0}
   chunkSize: 32
   visibleRadiusInChunks: 1
-  tilesPerFrame: 256
-  maxConcurrentLoads: 2
-  mapName: map
-  useMergedMode: 0
   enableDebugLogs: 0
-  tilemapManager: {fileID: 0}
 --- !u!1 &1496522154
 GameObject:
   m_ObjectHideFlags: 0

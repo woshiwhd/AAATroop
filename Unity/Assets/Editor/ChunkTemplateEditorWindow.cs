@@ -278,9 +278,26 @@ namespace Editor
                 var cd = _templateDatas[i];
                 string label = ta != null ? ta.name : "(null)";
                 if (cd != null && !string.IsNullOrEmpty(cd.templateName)) label = cd.templateName + " [" + label + "]";
-                if (GUILayout.Button(label, (i == _selectedIndex) ? EditorStyles.boldLabel : EditorStyles.miniButton))
+
+                var style = (i == _selectedIndex) ? EditorStyles.boldLabel : EditorStyles.miniButton;
+                var rect = GUILayoutUtility.GetRect(new GUIContent(label), style);
+
+                // 用 Box 画外观，避免 GUI.Button 吞掉右键事件
+                GUI.Box(rect, label, style);
+
+                var e = Event.current;
+                if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
                 {
-                    SelectTemplate(i);
+                    if (e.button == 0)
+                    {
+                        SelectTemplate(i);
+                        e.Use();
+                    }
+                    else if (e.button == 1)
+                    {
+                        ShowTemplateContextMenu(i);
+                        e.Use();
+                    }
                 }
             }
             EditorGUILayout.EndScrollView();
@@ -300,6 +317,53 @@ namespace Editor
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndVertical();
+        }
+
+        private void ShowTemplateContextMenu(int index)
+        {
+            var ta = (index >= 0 && index < _templateAssets.Count) ? _templateAssets[index] : null;
+            if (ta == null) return;
+
+            var path = AssetDatabase.GetAssetPath(ta);
+            var menu = new GenericMenu();
+
+            menu.AddItem(new GUIContent("Reveal in Project"), false, () =>
+            {
+                EditorGUIUtility.PingObject(ta);
+                Selection.activeObject = ta;
+            });
+
+            menu.AddSeparator("");
+
+            menu.AddItem(new GUIContent("Delete"), false, () =>
+            {
+                bool ok = EditorUtility.DisplayDialog(
+                    "Delete Template",
+                    $"确定删除模板资源？\n\n{path}\n\n此操作会删除对应的 .json 资产（以及 Unity 的 .meta）。",
+                    "Delete",
+                    "Cancel"
+                );
+                if (!ok) return;
+
+                // 如果正在编辑同一个模板，先清掉工作副本，避免保留已删除的引用。
+                if (index == _selectedIndex)
+                {
+                    _selectedIndex = -1;
+                    _working = null;
+                }
+
+                if (!AssetDatabase.DeleteAsset(path))
+                {
+                    EditorUtility.DisplayDialog("Delete Failed", $"删除失败：{path}", "OK");
+                    return;
+                }
+
+                AssetDatabase.Refresh();
+                LoadTemplates();
+                Repaint();
+            });
+
+            menu.ShowAsContext();
         }
 
         private void SelectTemplate(int index)
@@ -438,6 +502,8 @@ namespace Editor
                     EditorGUILayout.EndHorizontal();
                 }
 
+                EditorGUILayout.HelpBox("操作提示：左键绘制当前 Brush Tile ID；右键切换阻挡（blocking）。阻挡格子会显示红色背景，空格显示为 B。", MessageType.Info);
+
                 _rightScroll = EditorGUILayout.BeginScrollView(_rightScroll);
 
                 int w = _working.width;
@@ -503,6 +569,8 @@ namespace Editor
                 EditorGUILayout.BeginHorizontal();
                 _saveName = EditorGUILayout.TextField("Save Name", _saveName);
                 _overwrite = EditorGUILayout.ToggleLeft("Overwrite if exists", _overwrite, GUILayout.Width(140));
+                if (GUILayout.Button("Save", GUILayout.Width(60))) SaveCurrent();
+                if (GUILayout.Button("Save As New", GUILayout.Width(100))) SaveAsNew();
                 if (GUILayout.Button("Save As", GUILayout.Width(100))) SaveAs();
                 EditorGUILayout.EndHorizontal();
             }
@@ -600,23 +668,7 @@ namespace Editor
         private void SaveAs()
         {
             if (_working == null) return;
-            // 验证
-            int expected = _working.width * _working.height;
-            if (_working.tiles == null || _working.tiles.Length != expected)
-            {
-                EditorUtility.DisplayDialog("Invalid", $"tiles 数组长度应为 {expected}", "OK");
-                return;
-            }
-            if (_working.blocking == null)
-            {
-                _working.blocking = new byte[expected];
-            }
-            else if (_working.blocking.Length != expected)
-            {
-                var nb = new byte[expected];
-                Array.Copy(_working.blocking, nb, Math.Min(_working.blocking.Length, expected));
-                _working.blocking = nb;
-            }
+            if (!ValidateAndFixWorkingForSave()) return;
 
             string fileName = _saveName;
             if (string.IsNullOrWhiteSpace(fileName)) fileName = "new_chunk";
@@ -633,16 +685,91 @@ namespace Editor
                 path = path.Replace("\\", "/");
             }
 
+            SaveWorkingToPath(path, allowOverwrite: _overwrite);
+        }
+
+        private void SaveCurrent()
+        {
+            if (_working == null) return;
+            if (!ValidateAndFixWorkingForSave()) return;
+
+            if (_selectedIndex < 0 || _selectedIndex >= _templateAssets.Count || _templateAssets[_selectedIndex] == null)
+            {
+                EditorUtility.DisplayDialog("Save Current", "当前没有选中的模板文件。请先在左侧选择一个模板，或使用 Save As New / Save As。", "OK");
+                return;
+            }
+
+            var ta = _templateAssets[_selectedIndex];
+            var path = AssetDatabase.GetAssetPath(ta);
+            if (string.IsNullOrEmpty(path) || !path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                EditorUtility.DisplayDialog("Save Current", $"当前选中的模板不是可保存的 json 资源：{path}", "OK");
+                return;
+            }
+
+            SaveWorkingToPath(path, allowOverwrite: true);
+        }
+
+        private void SaveAsNew()
+        {
+            if (_working == null) return;
+            if (!ValidateAndFixWorkingForSave()) return;
+
+            string fileName = _saveName;
+            if (string.IsNullOrWhiteSpace(fileName)) fileName = "new_chunk";
+            string relDir = "Assets/Resources/" + ResourcesPath;
+            if (!Directory.Exists(relDir)) Directory.CreateDirectory(relDir);
+            string path = Path.Combine(relDir, fileName + ".json");
+            path = AssetDatabase.GenerateUniqueAssetPath(path);
+            path = path.Replace("\\", "/");
+
+            SaveWorkingToPath(path, allowOverwrite: false);
+        }
+
+        private bool ValidateAndFixWorkingForSave()
+        {
+            // 验证
+            int expected = _working.width * _working.height;
+            if (_working.tiles == null || _working.tiles.Length != expected)
+            {
+                EditorUtility.DisplayDialog("Invalid", $"tiles 数组长度应为 {expected}", "OK");
+                return false;
+            }
+            if (_working.blocking == null)
+            {
+                _working.blocking = new byte[expected];
+            }
+            else if (_working.blocking.Length != expected)
+            {
+                var nb = new byte[expected];
+                Array.Copy(_working.blocking, nb, Math.Min(_working.blocking.Length, expected));
+                _working.blocking = nb;
+            }
+            return true;
+        }
+
+        private void SaveWorkingToPath(string path, bool allowOverwrite)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return;
+
+            // 统一为 AssetDatabase 路径格式
+            path = path.Replace("\\", "/");
+
+            if (!allowOverwrite)
+            {
+                path = AssetDatabase.GenerateUniqueAssetPath(path);
+            }
+
             try
             {
                 string json = JsonUtility.ToJson(_working, true);
                 File.WriteAllText(path, json);
                 AssetDatabase.ImportAsset(path);
                 AssetDatabase.Refresh();
-                EditorUtility.DisplayDialog("Saved", "Template w to: " + path, "OK");
+                EditorUtility.DisplayDialog("Saved", "Template wrote to: " + path, "OK");
+
                 // 重新加载模板并选中新保存的
                 LoadTemplates();
-                // 尝试按路径查找索引
                 var newTa = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
                 if (newTa != null)
                 {

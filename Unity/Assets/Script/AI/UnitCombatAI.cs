@@ -28,6 +28,13 @@ namespace Script
         [Header("巡逻点（可选）")]
         public List<Transform> patrolPoints = new List<Transform>();
 
+        [Header("2D Facing (optional)")]
+        [Tooltip("是否在 2D 中将朝向（Z 轴旋转）对齐到移动方向")]
+        public bool rotateToMoveDirection2D = false;
+
+        [Tooltip("朝向偏移角度（度）。例如精灵默认朝上/朝右时可用此校正。")]
+        public float facingAngleOffset = 0f;
+
         // runtime cached
         private IEnemyMovement _movementImpl;
         private IEnemyAttack _attackImpl;
@@ -113,7 +120,13 @@ namespace Script
             dir.z = 0f; // 保持在同一深度，适合当前 2D 场景
             if (dir.sqrMagnitude < 0.0001f) return;
             transform.position += dir.normalized * config.speed * deltaTime;
-            transform.rotation = Quaternion.LookRotation(dir.normalized);
+
+            // 2D 约定：单位在 XY 平面移动，Z 轴用于层级；若需要朝向，仅做 Z 轴旋转。
+            if (rotateToMoveDirection2D)
+            {
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + facingAngleOffset;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            }
         }
 
         /// <summary>
