@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34f037e14a4443fda5d71d77f214f713, type: 3}
+  m_Name: TileDatabase
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: c49b4764a334a794b84abd2803c3f5b1, type: 2}
+  - {fileID: 11400000, guid: af5cca05fa3f2de43a9e89f2a4b625fe, type: 2}
+  - {fileID: 11400000, guid: 016a09d7a11e6d44d879d8c816b5c5f3, type: 2}
+  - {fileID: 11400000, guid: 719c7e0171b64fc499c884308b19edca, type: 2}
+  - {fileID: 11400000, guid: 7d2336b805e07234ab40546bad6136da, type: 2}
+  - {fileID: 11400000, guid: a71455b805ee5254f81e7c8f5ff221aa, type: 2}
+  - {fileID: 11400000, guid: 02dc486a295df9f4a84d937c4ac3e306, type: 2}
+  - {fileID: 11400000, guid: 8c3b190ddc95afc43b8acbb58cdcbbd5, type: 2}

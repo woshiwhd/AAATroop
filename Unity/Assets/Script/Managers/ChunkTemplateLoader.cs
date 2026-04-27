@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using Cysharp.Threading.Tasks;
+using Script.Core.Assets;
 using Script.Utilities;
 
 namespace Script.Managers
@@ -13,24 +15,46 @@ namespace Script.Managers
     public class ChunkTemplateLoader
     {
         private readonly List<TilemapLoader.ChunkData> _templates = new List<TilemapLoader.ChunkData>();
+        /// <summary>TextAsset.name -> 已解析模板（与 _templates 中对象为同一引用）。</summary>
+        private readonly Dictionary<string, TilemapLoader.ChunkData> _templatesByName = new Dictionary<string, TilemapLoader.ChunkData>();
         // 会扫描的资源路径列表（Resources 下的子目录），优先包含 chunk_templates 以及 兼容性的 chunks
         private readonly string[] _resourcesPaths = new[] { "chunk_templates", "chunks" };
         private bool _debug = false;
+        private IAssetService _assetService;
+
+        public void SetAssetService(IAssetService assetService)
+        {
+            _assetService = assetService;
+        }
 
         /// <summary>
         /// 在主线程初始化，扫描 Resources/chunk_templates 下的 TextAsset，解析为 ChunkData。
         /// 仅接受与 expectedWidth/expectedHeight 匹配的模板。
         /// </summary>
-        public void Initialize(int expectedWidth, int expectedHeight, bool debug = false)
+        public async UniTask InitializeAsync(int expectedWidth, int expectedHeight, bool debug = false)
         {
             _debug = debug;
             _templates.Clear();
+            _templatesByName.Clear();
+
+            if (_assetService == null)
+            {
+                var backends = new Dictionary<AssetBackendType, IAssetBackend>
+                {
+                    { AssetBackendType.Resources, new ResourcesBackend() },
+                    { AssetBackendType.YooAsset, new YooAssetBackend() },
+                    { AssetBackendType.Addressables, new AddressablesBackend() }
+                };
+                _assetService = new AssetService(backends, null, null);
+                await _assetService.InitializeAsync();
+            }
 
             int totalLoaded = 0;
             foreach (var path in _resourcesPaths)
              {
-                var assets = Resources.LoadAll<TextAsset>(path);
-                if (assets == null || assets.Length == 0)
+                IReadOnlyList<TextAsset> assets = await _assetService.LoadTextAssetsByGroupAsync(path);
+
+                if (assets == null || assets.Count == 0)
                 {
                     if (_debug) GameLog.Log($"ChunkTemplateLoader: 在 Resources/{path} 未发现任何 TextAsset。");
                     continue;
@@ -100,6 +124,12 @@ namespace Script.Managers
                         try { chunk.templateName = ta.name; } catch { }
 
                         _templates.Add(chunk);
+                        if (!string.IsNullOrEmpty(ta.name))
+                        {
+                            if (_templatesByName.ContainsKey(ta.name) && _debug)
+                                GameLog.LogWarning($"ChunkTemplateLoader: 模板名重复，后加载的覆盖: {ta.name}");
+                            _templatesByName[ta.name] = chunk;
+                        }
                         totalLoaded++;
                     }
                     catch (System.Exception ex)
@@ -120,6 +150,21 @@ namespace Script.Managers
         {
             if (_templates.Count == 0) return null;
             var t = _templates[Random.Range(0, _templates.Count)];
+            return CloneTemplate(t);
+        }
+
+        /// <summary>
+        /// 按 Resources 中 TextAsset 的文件名（不含路径）取模板副本；找不到返回 null。
+        /// </summary>
+        public TilemapLoader.ChunkData GetTemplateCopyByName(string templateAssetName)
+        {
+            if (string.IsNullOrEmpty(templateAssetName)) return null;
+            if (!_templatesByName.TryGetValue(templateAssetName, out var t) || t == null) return null;
+            return CloneTemplate(t);
+        }
+
+        private static TilemapLoader.ChunkData CloneTemplate(TilemapLoader.ChunkData t)
+        {
             var copy = new TilemapLoader.ChunkData();
             copy.width = t.width;
             copy.height = t.height;
@@ -128,7 +173,6 @@ namespace Script.Managers
             if (t.ground != null) copy.ground = (int[])t.ground.Clone();
             copy.originX = t.originX;
             copy.originY = t.originY;
-            // 复制模板名用于调试显示
             copy.templateName = t.templateName;
             return copy;
         }

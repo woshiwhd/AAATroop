@@ -1,21 +1,24 @@
-﻿using System.Threading;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.Core.Assets;
 using UnityEngine;
 
 namespace Script.Core
 {
     /// <summary>
-    /// 简易资源提供器：实现 IResourceProvider，用于在运行时从 Resources 加载文本资源（例如 chunk JSON）
-    /// - 仅在未提供自定义 provider 时使用
+    /// 兼容旧逻辑：转调 IAssetService（若未初始化则回退 ResourcesBackend）。
     /// </summary>
     public class ResourcesProvider : IResourceProvider
     {
         public async UniTask<TextAsset> LoadTextAsync(string path, CancellationToken ct = default)
         {
-            // 这里直接使用 Unity 的 Resources.LoadTextAsset（同步）并包装为 UniTask，便于在异步流程中使用
-            await UniTask.Yield(ct);
-            var ta = Resources.Load<TextAsset>(path);
-            return ta;
+            var service = AssetServiceLocator.Current;
+            if (service != null) return await service.LoadAssetAsync<TextAsset>(path, ct);
+
+            // 兜底：在未初始化 AssetService 时，直接通过 ResourcesBackend 读取
+            var backend = new ResourcesBackend();
+            await backend.InitializeAsync(ct);
+            return await backend.LoadAssetAsync(path, typeof(TextAsset), ct) as TextAsset;
         }
     }
 }

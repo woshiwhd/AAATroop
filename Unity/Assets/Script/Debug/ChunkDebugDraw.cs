@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Script.Managers;
 
+#if UNITY_EDITOR
 namespace Script.Debug
 {
     /// <summary>
@@ -99,3 +100,4 @@ namespace Script.Debug
         }
     }
 }
+#endif

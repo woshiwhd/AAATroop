@@ -42,7 +42,6 @@ namespace Editor
 
         // 绘制
         private int _selectedTileId = 0;
-        private bool _paintBlocking = false;
         /// <summary>0=主层+阻挡, 1=地表</summary>
         private int _editLayer = 0;
 

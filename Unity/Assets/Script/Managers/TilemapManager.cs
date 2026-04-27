@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Script.Core.Assets;
 using Script.Utilities;
 
 namespace Script.Managers
@@ -20,6 +21,16 @@ namespace Script.Managers
         [SerializeField] private Tilemap groundTilemap;
         [SerializeField] private Tilemap blockingTilemap;
         [SerializeField] private TileDatabase tileDatabase;
+        [Tooltip("可选：通过统一资源服务加载 TileDatabase 的资源键（例如 base_map_tile_database）")]
+        [SerializeField] private string tileDatabaseAssetKey = "";
+        [SerializeField] private AssetRoutingConfig assetRoutingConfig;
+        [SerializeField] private AssetGroupsConfig assetGroupsConfig;
+
+        [Header("Procedural / Encounters")]
+        [Tooltip("为 0 时 Awake 内随机一个非零种子（可复现请在 Inspector 中固定）")]
+        [SerializeField] private int worldSeed;
+        [SerializeField] private ProceduralChunkGenerator proceduralGenerator;
+        [SerializeField] private SpecialChunkEncounterRegistry encounterRegistry;
 
         [Header("Chunk Settings")]
         [SerializeField] private int chunkWidth = 32;
@@ -44,15 +55,29 @@ namespace Script.Managers
         [Tooltip("如果按坐标找不到 chunk 文件，是否从模板库随机选择一个模板填充当前 chunk")]
         [SerializeField] private bool useTemplateFallback = true;
         private ChunkTemplateLoader _templateLoader;
+        private bool _templateLoaderInitRequired = false;
+        private bool _templateLoaderInitStarted = false;
+        private UniTaskCompletionSource _templateLoaderInitTcs;
+        private CancellationTokenSource _templateLoaderInitCts;
+        private readonly object _templateLoaderInitLock = new object();
 
         void Awake()
         {
             if (targetTilemap == null) targetTilemap = GetComponent<Tilemap>();
 
-            if (useTemplateFallback)
+            EnsureAssetServiceInitialized();
+
+            if (worldSeed == 0)
+            {
+                worldSeed = UnityEngine.Random.Range(1, int.MaxValue);
+                GameLog.Log($"TilemapManager: worldSeed 未设置，已随机为 {worldSeed}");
+            }
+
+            if (useTemplateFallback || encounterRegistry != null)
             {
                 _templateLoader = new ChunkTemplateLoader();
-                _templateLoader.Initialize(chunkWidth, chunkHeight, false);
+                _templateLoader.SetAssetService(AssetServiceLocator.Current);
+                _templateLoaderInitRequired = true;
             }
 
             if (tileDatabase == null)
@@ -62,40 +87,6 @@ namespace Script.Managers
                 {
                     tileDatabase = foundDb;
                     GameLog.Log("TilemapManager: 自动找到 TileDatabase 并赋值。");
-                }
-                else
-                {
-#if UNITY_EDITOR
-                    try
-                    {
-                        var guids = UnityEditor.AssetDatabase.FindAssets("t:TileDatabase");
-                        if (guids != null && guids.Length > 0)
-                        {
-                            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
-                            var dbAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TileDatabase>(path);
-                            if (dbAsset != null)
-                            {
-                                tileDatabase = dbAsset;
-                                GameLog.Log($"TilemapManager: 在编辑器 AssetDatabase 中找到 TileDatabase 并赋值 ({path})");
-                            }
-                        }
-                    }
-                    catch { }
-#endif
-
-                    if (tileDatabase == null)
-                    {
-                        try
-                        {
-                            var arr = Resources.LoadAll<TileDatabase>("");
-                            if (arr != null && arr.Length > 0)
-                            {
-                                tileDatabase = arr[0];
-                                GameLog.Log("TilemapManager: 从 Resources.LoadAll 中找到 TileDatabase 并赋值。");
-                            }
-                        }
-                        catch { }
-                    }
                 }
             }
 
@@ -131,7 +122,7 @@ namespace Script.Managers
             }
         }
 
-        void Start()
+        async void Start()
         {
             if (targetTilemap == null)
             {
@@ -139,12 +130,34 @@ namespace Script.Managers
                 enabled = false;
                 return;
             }
+
+            if (tileDatabase == null && !string.IsNullOrEmpty(tileDatabaseAssetKey) && AssetServiceLocator.Current != null)
+            {
+                tileDatabase = await AssetServiceLocator.Current.LoadAssetAsync<TileDatabase>(tileDatabaseAssetKey);
+                if (tileDatabase != null)
+                    GameLog.Log($"TilemapManager: 通过 AssetService 加载 TileDatabase 成功（{tileDatabaseAssetKey}）。");
+            }
+
             if (tileDatabase == null)
             {
                 GameLog.LogError("TilemapManager: tileDatabase 未设置。");
                 enabled = false;
                 return;
             }
+        }
+
+        private void EnsureAssetServiceInitialized()
+        {
+            if (AssetServiceLocator.Current != null) return;
+            var backends = new Dictionary<AssetBackendType, IAssetBackend>
+            {
+                { AssetBackendType.Resources, new ResourcesBackend() },
+                { AssetBackendType.YooAsset, new YooAssetBackend(assetRoutingConfig != null ? assetRoutingConfig.yooAssetPackageName : "DefaultPackage") },
+                { AssetBackendType.Addressables, new AddressablesBackend() }
+            };
+            var service = new AssetService(backends, assetRoutingConfig, assetGroupsConfig);
+            AssetServiceLocator.Set(service);
+            service.InitializeAsync().Forget();
         }
 
         /// <summary>
@@ -211,7 +224,32 @@ namespace Script.Managers
             TilemapLoader.ChunkData data = null;
             try
             {
-                if (useTemplateFallback && _templateLoader != null)
+                await EnsureTemplateLoaderInitializedAsync(ct);
+
+                if (encounterRegistry != null && encounterRegistry.TryGetTemplateName(chunk, out var encounterTemplateName))
+                {
+                    if (_templateLoader != null)
+                    {
+                        data = _templateLoader.GetTemplateCopyByName(encounterTemplateName);
+                        if (data != null)
+                        {
+                            data.originX = chunk.x * chunkWidth;
+                            data.originY = chunk.y * chunkHeight;
+                            GameLog.Log($"TilemapManager: 特殊遭遇模板 \"{encounterTemplateName}\" 填充 chunk {chunk}");
+                        }
+                        else
+                            GameLog.LogWarning($"TilemapManager: 遭遇模板未找到 \"{encounterTemplateName}\"，尝试程序化/回退 chunk {chunk}");
+                    }
+                }
+
+                if (data == null && proceduralGenerator != null)
+                {
+                    data = proceduralGenerator.GenerateChunk(worldSeed, chunk, chunkWidth, chunkHeight);
+                    if (data != null)
+                        GameLog.Log($"TilemapManager: 程序化生成 chunk {chunk}");
+                }
+
+                if (data == null && useTemplateFallback && _templateLoader != null)
                 {
                     var tpl = _templateLoader.GetRandomTemplateCopy();
                     if (tpl != null)
@@ -219,13 +257,13 @@ namespace Script.Managers
                         tpl.originX = chunk.x * chunkWidth;
                         tpl.originY = chunk.y * chunkHeight;
                         data = tpl;
-                        GameLog.Log($"TilemapManager: 使用模板填充 chunk {chunk}");
+                        GameLog.Log($"TilemapManager: 随机模板填充 chunk {chunk}");
                     }
                 }
 
                 if (data == null)
                 {
-                    GameLog.LogWarning($"TilemapManager: 未找到可用模板以填充 chunk {chunk}");
+                    GameLog.LogWarning($"TilemapManager: 无法填充 chunk {chunk}（无遭遇模板/程序化未配置/无随机模板回退）");
                     return;
                 }
             }
@@ -295,6 +333,55 @@ namespace Script.Managers
             catch (Exception e)
             {
                 GameLog.LogError($"TilemapManager: 加载 chunk {chunk} 时发生异常：{e}");
+            }
+        }
+
+        private async UniTask EnsureTemplateLoaderInitializedAsync(CancellationToken externalCt)
+        {
+            if (!_templateLoaderInitRequired || _templateLoader == null) return;
+
+            UniTask waitTask;
+            lock (_templateLoaderInitLock)
+            {
+                if (!_templateLoaderInitStarted)
+                {
+                    _templateLoaderInitStarted = true;
+                    _templateLoaderInitTcs = new UniTaskCompletionSource();
+                    _templateLoaderInitCts = new CancellationTokenSource();
+                    InitializeTemplateLoaderAsync(_templateLoaderInitCts.Token).Forget();
+                }
+                waitTask = _templateLoaderInitTcs.Task;
+            }
+
+            await waitTask.AttachExternalCancellation(externalCt);
+        }
+
+        private async UniTask InitializeTemplateLoaderAsync(CancellationToken initCt)
+        {
+            try
+            {
+                if (_templateLoader != null)
+                    await _templateLoader.InitializeAsync(chunkWidth, chunkHeight, false);
+                _templateLoaderInitTcs?.TrySetResult();
+            }
+            catch (OperationCanceledException)
+            {
+                _templateLoaderInitTcs?.TrySetCanceled();
+            }
+            catch (Exception ex)
+            {
+                _templateLoaderInitTcs?.TrySetException(ex);
+                GameLog.LogError($"TilemapManager: 模板初始化失败: {ex.Message}");
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_templateLoaderInitCts != null)
+            {
+                _templateLoaderInitCts.Cancel();
+                _templateLoaderInitCts.Dispose();
+                _templateLoaderInitCts = null;
             }
         }
 

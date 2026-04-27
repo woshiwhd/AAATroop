@@ -1,0 +1,34 @@
+﻿2026-04-27 22:03:08.009 [INFO] Begin to build package : Main by ScriptableBuildPipeline
+2026-04-27 22:03:08.009 [INFO] --------------------------------------------->TaskPrepare<--------------------------------------------
+2026-04-27 22:03:08.014 [INFO] TaskPrepare It takes 0 seconds in total
+2026-04-27 22:03:08.014 [INFO] --------------------------------------------->TaskGetBuildMap<--------------------------------------------
+2026-04-27 22:03:08.651 [INFO] TaskGetBuildMap It takes 0 seconds in total
+2026-04-27 22:03:08.651 [INFO] --------------------------------------------->TaskBuilding<--------------------------------------------
+2026-04-27 22:03:11.386 [INFO] UnityEngine build success!
+2026-04-27 22:03:11.386 [INFO] TaskBuilding It takes 2 seconds in total
+2026-04-27 22:03:11.386 [INFO] --------------------------------------------->TaskVerifyBuildResult<--------------------------------------------
+2026-04-27 22:03:11.386 [INFO] Build results verify success!
+2026-04-27 22:03:11.386 [INFO] TaskVerifyBuildResult It takes 0 seconds in total
+2026-04-27 22:03:11.386 [INFO] --------------------------------------------->TaskEncryption<--------------------------------------------
+2026-04-27 22:03:11.386 [INFO] TaskEncryption It takes 0 seconds in total
+2026-04-27 22:03:11.391 [INFO] --------------------------------------------->TaskUpdateBundleInfo<--------------------------------------------
+2026-04-27 22:03:11.396 [INFO] TaskUpdateBundleInfo It takes 0 seconds in total
+2026-04-27 22:03:11.396 [INFO] --------------------------------------------->TaskCreateManifest<--------------------------------------------
+2026-04-27 22:03:11.399 [WARN] [ErrorCode601] Found stray bundle ! Bundle ID : 9 Bundle name : unityshaders.bundle
+2026-04-27 22:03:11.400 [INFO] Create package manifest file: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321/Main_2026-04-27-1321.json
+2026-04-27 22:03:11.409 [INFO] Create package manifest file: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321/Main_2026-04-27-1321.bytes
+2026-04-27 22:03:11.409 [INFO] Create package manifest hash file: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321/Main_2026-04-27-1321.hash
+2026-04-27 22:03:11.414 [INFO] Create package manifest version file: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321/Main.version
+2026-04-27 22:03:11.416 [INFO] TaskCreateManifest It takes 0 seconds in total
+2026-04-27 22:03:11.418 [INFO] --------------------------------------------->TaskCreateReport<--------------------------------------------
+2026-04-27 22:03:11.419 [INFO] Create build report file: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321/Main_2026-04-27-1321.report
+2026-04-27 22:03:11.419 [INFO] TaskCreateReport It takes 0 seconds in total
+2026-04-27 22:03:11.419 [INFO] --------------------------------------------->TaskCreatePackage<--------------------------------------------
+2026-04-27 22:03:11.419 [INFO] Start making patch package: D:/Work/TJ/2D/AAAHolder/AAATroop/Unity/Bundles/MiniGame/Main/2026-04-27-1321
+2026-04-27 22:03:11.428 [INFO] TaskCreatePackage It takes 0 seconds in total
+2026-04-27 22:03:11.428 [INFO] --------------------------------------------->TaskCopyBuildinFiles<--------------------------------------------
+2026-04-27 22:03:11.428 [INFO] TaskCopyBuildinFiles It takes 0 seconds in total
+2026-04-27 22:03:11.428 [INFO] --------------------------------------------->TaskCreateCatalog<--------------------------------------------
+2026-04-27 22:03:11.428 [INFO] TaskCreateCatalog It takes 0 seconds in total
+2026-04-27 22:03:11.428 [INFO] Total build process time: 2 seconds
+2026-04-27 22:03:11.428 [INFO] Resource pipeline build success
