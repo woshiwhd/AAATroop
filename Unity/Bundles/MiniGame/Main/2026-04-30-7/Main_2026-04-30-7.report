@@ -1,0 +1,957 @@
+{
+    "Summary": {
+        "YooVersion": "2.3.18",
+        "UnityVersion": "2022.3.61t9",
+        "BuildDate": "2026/4/30 0:07:29",
+        "BuildSeconds": 16,
+        "BuildTarget": 47,
+        "BuildPipeline": "ScriptableBuildPipeline",
+        "BuildBundleType": 2,
+        "BuildPackageName": "Main",
+        "BuildPackageVersion": "2026-04-30-7",
+        "BuildPackageNote": "2026/4/30 0:07:12",
+        "UniqueBundleName": false,
+        "EnableAddressable": false,
+        "SupportExtensionless": true,
+        "LocationToLower": false,
+        "IncludeAssetGUID": false,
+        "AutoCollectShaders": true,
+        "IgnoreRuleName": "YooAsset.Editor.NormalIgnoreRule",
+        "ClearBuildCacheFiles": false,
+        "UseAssetDependencyDB": false,
+        "EnableSharePackRule": true,
+        "SingleReferencedPackAlone": true,
+        "EncryptionServicesClassName": "YooAsset.Editor.EncryptionNone",
+        "ManifestProcessServicesClassName": "YooAsset.Editor.ManifestProcessNone",
+        "ManifestRestoreServicesClassName": "YooAsset.Editor.ManifestRestoreNone",
+        "FileNameStyle": 0,
+        "CompressOption": 2,
+        "DisableWriteTypeTree": false,
+        "IgnoreTypeTreeChanges": true,
+        "ReplaceAssetPathWithAddress": false,
+        "WriteLinkXML": true,
+        "CacheServerHost": "",
+        "CacheServerPort": 0,
+        "BuiltinShadersBundleName": "unityshaders.bundle",
+        "MonoScriptsBundleName": "",
+        "AssetFileTotalCount": 38,
+        "MainAssetTotalCount": 11,
+        "AllBundleTotalCount": 12,
+        "AllBundleTotalSize": 329665,
+        "EncryptedBundleTotalCount": 0,
+        "EncryptedBundleTotalSize": 0
+    },
+    "AssetInfos": [
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32.json",
+            "AssetGUID": "ff59d70a817546c48c62af3d7ba7d757",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "MainBundleSize": 2522,
+            "DependAssets": [],
+            "DependBundles": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_1.json",
+            "AssetGUID": "a5567406e234b5c40866f16c4f2ebb60",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "MainBundleSize": 2522,
+            "DependAssets": [],
+            "DependBundles": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_2.json",
+            "AssetGUID": "12b6bdc4b82bce347807d77d4a17d076",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "MainBundleSize": 2522,
+            "DependAssets": [],
+            "DependBundles": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_3.json",
+            "AssetGUID": "d218f223907b6f14396555ff7aa53426",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "MainBundleSize": 2522,
+            "DependAssets": [],
+            "DependBundles": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_4.json",
+            "AssetGUID": "60941a00d1f4de740bc251a3ce05d0de",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "MainBundleSize": 2522,
+            "DependAssets": [],
+            "DependBundles": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/map.prefab",
+            "AssetGUID": "a938cbef4ab6c4f4d9ed5592703dfc27",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_tilesset.bundle",
+            "MainBundleSize": 6809,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Terrian/grass.asset",
+                    "AssetGUID": "9b4bed01947f2144485da6bc5a8619aa"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g1.png",
+                    "AssetGUID": "250fd29d9cf5360409917425d8653f8c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass_y.asset",
+                    "AssetGUID": "6d8918df3820b7845803ffa04775144c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/I_tpict1.res.png",
+                    "AssetGUID": "a6b99326445656146885fd805fcb4f8c"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c00.asset",
+                    "AssetGUID": "c49b4764a334a794b84abd2803c3f5b1"
+                }
+            ],
+            "DependBundles": [
+                "share_assets_terrian.bundle",
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+            "AssetGUID": "f78493ae078f4ce4dad5240a7ed9c5fe",
+            "AssetTags": [
+                "map"
+            ],
+            "MainBundleName": "assets_gameassets_map_tilesset.bundle",
+            "MainBundleSize": 6809,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Terrian/grass/g1.png",
+                    "AssetGUID": "250fd29d9cf5360409917425d8653f8c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g2.png",
+                    "AssetGUID": "d9cb0a0f46038f04cbe746603b0d3113"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g3.png",
+                    "AssetGUID": "116904bdc94f8d64ea19c42078f4cd92"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g4.png",
+                    "AssetGUID": "a62768875d4b3874dab7307b3588ce6a"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g5.png",
+                    "AssetGUID": "4c6e7ffe357dfc949a3f7cb48f53d80e"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g6.png",
+                    "AssetGUID": "54e4f8b7808b29244a03415b129aed64"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g7.png",
+                    "AssetGUID": "2b25bb8ce730879469f4bc9ffbf624e1"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g8.png",
+                    "AssetGUID": "358caaa0a11a1834db5adf0eb90170e2"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c00.asset",
+                    "AssetGUID": "c49b4764a334a794b84abd2803c3f5b1"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c01.asset",
+                    "AssetGUID": "af5cca05fa3f2de43a9e89f2a4b625fe"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c02.asset",
+                    "AssetGUID": "016a09d7a11e6d44d879d8c816b5c5f3"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c03.asset",
+                    "AssetGUID": "719c7e0171b64fc499c884308b19edca"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c04.asset",
+                    "AssetGUID": "7d2336b805e07234ab40546bad6136da"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c05.asset",
+                    "AssetGUID": "a71455b805ee5254f81e7c8f5ff221aa"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c06.asset",
+                    "AssetGUID": "02dc486a295df9f4a84d937c4ac3e306"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c07.asset",
+                    "AssetGUID": "8c3b190ddc95afc43b8acbb58cdcbbd5"
+                }
+            ],
+            "DependBundles": [
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Battle.scene",
+            "AssetGUID": "ab1a44a6159509540868862c76ec25e0",
+            "AssetTags": [
+                "scene"
+            ],
+            "MainBundleName": "assets_gameassets_scene.bundle",
+            "MainBundleSize": 45791,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1.controller",
+                    "AssetGUID": "bb8000e9c5e783c4892b680158ee6b59"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1idle.anim",
+                    "AssetGUID": "5977f6963048fbd43b9c10ec1e678670"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1move.anim",
+                    "AssetGUID": "8036b3603a414624baa6d8c3cbff3032"
+                },
+                {
+                    "AssetPath": "Assets/AssetGroupsConfig.asset",
+                    "AssetGUID": "65a0bc9ce7f6bd842adab6e6388b0853"
+                },
+                {
+                    "AssetPath": "Assets/AssetRoutingConfig.asset",
+                    "AssetGUID": "b8c742c8c56d3db48a67064fafeacc5f"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitCombatConfig.asset",
+                    "AssetGUID": "08365072a1cfe9243bf1c2695033f3cb"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitStateGraph.asset",
+                    "AssetGUID": "d4116ba32e2b38c47b8d7a1eef4a166f"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+                    "AssetGUID": "f78493ae078f4ce4dad5240a7ed9c5fe"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+                    "AssetGUID": "2b59f04729ccebd4c9ffb2e57310ae8a"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+                    "AssetGUID": "2bbd0936893725342b9bcf28f5a2a6f7"
+                },
+                {
+                    "AssetPath": "Assets/Sprite/spritesheet.png",
+                    "AssetGUID": "7962a2e49f6812a489c11282003762a6"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g1.png",
+                    "AssetGUID": "250fd29d9cf5360409917425d8653f8c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g2.png",
+                    "AssetGUID": "d9cb0a0f46038f04cbe746603b0d3113"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g3.png",
+                    "AssetGUID": "116904bdc94f8d64ea19c42078f4cd92"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g4.png",
+                    "AssetGUID": "a62768875d4b3874dab7307b3588ce6a"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g5.png",
+                    "AssetGUID": "4c6e7ffe357dfc949a3f7cb48f53d80e"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g6.png",
+                    "AssetGUID": "54e4f8b7808b29244a03415b129aed64"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g7.png",
+                    "AssetGUID": "2b25bb8ce730879469f4bc9ffbf624e1"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g8.png",
+                    "AssetGUID": "358caaa0a11a1834db5adf0eb90170e2"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c00.asset",
+                    "AssetGUID": "c49b4764a334a794b84abd2803c3f5b1"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c01.asset",
+                    "AssetGUID": "af5cca05fa3f2de43a9e89f2a4b625fe"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c02.asset",
+                    "AssetGUID": "016a09d7a11e6d44d879d8c816b5c5f3"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c03.asset",
+                    "AssetGUID": "719c7e0171b64fc499c884308b19edca"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c04.asset",
+                    "AssetGUID": "7d2336b805e07234ab40546bad6136da"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c05.asset",
+                    "AssetGUID": "a71455b805ee5254f81e7c8f5ff221aa"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c06.asset",
+                    "AssetGUID": "02dc486a295df9f4a84d937c4ac3e306"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c07.asset",
+                    "AssetGUID": "8c3b190ddc95afc43b8acbb58cdcbbd5"
+                }
+            ],
+            "DependBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_units.bundle",
+                "share_assets.bundle",
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_bt.bundle",
+                "share_assets_sprite.bundle",
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Lobby.scene",
+            "AssetGUID": "6e436f2fc660ed24481897ea37f486a9",
+            "AssetTags": [
+                "scene"
+            ],
+            "MainBundleName": "assets_gameassets_scene.bundle",
+            "MainBundleSize": 45791,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1.controller",
+                    "AssetGUID": "bb8000e9c5e783c4892b680158ee6b59"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1idle.anim",
+                    "AssetGUID": "5977f6963048fbd43b9c10ec1e678670"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1move.anim",
+                    "AssetGUID": "8036b3603a414624baa6d8c3cbff3032"
+                },
+                {
+                    "AssetPath": "Assets/AssetGroupsConfig.asset",
+                    "AssetGUID": "65a0bc9ce7f6bd842adab6e6388b0853"
+                },
+                {
+                    "AssetPath": "Assets/AssetRoutingConfig.asset",
+                    "AssetGUID": "b8c742c8c56d3db48a67064fafeacc5f"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitCombatConfig.asset",
+                    "AssetGUID": "08365072a1cfe9243bf1c2695033f3cb"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitStateGraph.asset",
+                    "AssetGUID": "d4116ba32e2b38c47b8d7a1eef4a166f"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+                    "AssetGUID": "f78493ae078f4ce4dad5240a7ed9c5fe"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+                    "AssetGUID": "2b59f04729ccebd4c9ffb2e57310ae8a"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+                    "AssetGUID": "2bbd0936893725342b9bcf28f5a2a6f7"
+                },
+                {
+                    "AssetPath": "Assets/Sprite/spritesheet.png",
+                    "AssetGUID": "7962a2e49f6812a489c11282003762a6"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g1.png",
+                    "AssetGUID": "250fd29d9cf5360409917425d8653f8c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g2.png",
+                    "AssetGUID": "d9cb0a0f46038f04cbe746603b0d3113"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g3.png",
+                    "AssetGUID": "116904bdc94f8d64ea19c42078f4cd92"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g4.png",
+                    "AssetGUID": "a62768875d4b3874dab7307b3588ce6a"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g5.png",
+                    "AssetGUID": "4c6e7ffe357dfc949a3f7cb48f53d80e"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g6.png",
+                    "AssetGUID": "54e4f8b7808b29244a03415b129aed64"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g7.png",
+                    "AssetGUID": "2b25bb8ce730879469f4bc9ffbf624e1"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g8.png",
+                    "AssetGUID": "358caaa0a11a1834db5adf0eb90170e2"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c00.asset",
+                    "AssetGUID": "c49b4764a334a794b84abd2803c3f5b1"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c01.asset",
+                    "AssetGUID": "af5cca05fa3f2de43a9e89f2a4b625fe"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c02.asset",
+                    "AssetGUID": "016a09d7a11e6d44d879d8c816b5c5f3"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c03.asset",
+                    "AssetGUID": "719c7e0171b64fc499c884308b19edca"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c04.asset",
+                    "AssetGUID": "7d2336b805e07234ab40546bad6136da"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c05.asset",
+                    "AssetGUID": "a71455b805ee5254f81e7c8f5ff221aa"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c06.asset",
+                    "AssetGUID": "02dc486a295df9f4a84d937c4ac3e306"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c07.asset",
+                    "AssetGUID": "8c3b190ddc95afc43b8acbb58cdcbbd5"
+                }
+            ],
+            "DependBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_units.bundle",
+                "share_assets.bundle",
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_bt.bundle",
+                "share_assets_sprite.bundle",
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+            "AssetGUID": "2b59f04729ccebd4c9ffb2e57310ae8a",
+            "AssetTags": [
+                "units"
+            ],
+            "MainBundleName": "assets_gameassets_units.bundle",
+            "MainBundleSize": 7188,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1.controller",
+                    "AssetGUID": "bb8000e9c5e783c4892b680158ee6b59"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1idle.anim",
+                    "AssetGUID": "5977f6963048fbd43b9c10ec1e678670"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1move.anim",
+                    "AssetGUID": "8036b3603a414624baa6d8c3cbff3032"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitCombatConfig.asset",
+                    "AssetGUID": "08365072a1cfe9243bf1c2695033f3cb"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitStateGraph.asset",
+                    "AssetGUID": "d4116ba32e2b38c47b8d7a1eef4a166f"
+                },
+                {
+                    "AssetPath": "Assets/Sprite/spritesheet.png",
+                    "AssetGUID": "7962a2e49f6812a489c11282003762a6"
+                }
+            ],
+            "DependBundles": [
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_bt.bundle",
+                "share_assets_sprite.bundle",
+                "unityshaders.bundle"
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+            "AssetGUID": "2bbd0936893725342b9bcf28f5a2a6f7",
+            "AssetTags": [
+                "units"
+            ],
+            "MainBundleName": "assets_gameassets_units.bundle",
+            "MainBundleSize": 7188,
+            "DependAssets": [
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1.controller",
+                    "AssetGUID": "bb8000e9c5e783c4892b680158ee6b59"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1idle.anim",
+                    "AssetGUID": "5977f6963048fbd43b9c10ec1e678670"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1move.anim",
+                    "AssetGUID": "8036b3603a414624baa6d8c3cbff3032"
+                },
+                {
+                    "AssetPath": "Assets/Sprite/spritesheet.png",
+                    "AssetGUID": "7962a2e49f6812a489c11282003762a6"
+                }
+            ],
+            "DependBundles": [
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_sprite.bundle",
+                "unityshaders.bundle"
+            ]
+        }
+    ],
+    "BundleInfos": [
+        {
+            "BundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "FileName": "97a1d3eb7b1a0a731b1eaa159895d2a4.bundle",
+            "FileHash": "97a1d3eb7b1a0a731b1eaa159895d2a4",
+            "FileCRC": 763555719,
+            "FileSize": 2522,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32.json",
+                    "AssetGUID": "ff59d70a817546c48c62af3d7ba7d757"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_1.json",
+                    "AssetGUID": "a5567406e234b5c40866f16c4f2ebb60"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_2.json",
+                    "AssetGUID": "12b6bdc4b82bce347807d77d4a17d076"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_3.json",
+                    "AssetGUID": "d218f223907b6f14396555ff7aa53426"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_4.json",
+                    "AssetGUID": "60941a00d1f4de740bc251a3ce05d0de"
+                }
+            ]
+        },
+        {
+            "BundleName": "assets_gameassets_map_tilesset.bundle",
+            "FileName": "2662fec6d5ee2ebecc7a569afb77dd21.bundle",
+            "FileHash": "2662fec6d5ee2ebecc7a569afb77dd21",
+            "FileCRC": 706906476,
+            "FileSize": 6809,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundles": [
+                "share_assets_terrian.bundle",
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ],
+            "ReferenceBundles": [
+                "assets_gameassets_scene.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/GameAssets/Map/Tilesset/map.prefab",
+                    "AssetGUID": "a938cbef4ab6c4f4d9ed5592703dfc27"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+                    "AssetGUID": "f78493ae078f4ce4dad5240a7ed9c5fe"
+                }
+            ]
+        },
+        {
+            "BundleName": "assets_gameassets_scene.bundle",
+            "FileName": "6c46110e47352b1f7160faff32effd9f.bundle",
+            "FileHash": "6c46110e47352b1f7160faff32effd9f",
+            "FileCRC": 3432806115,
+            "FileSize": 45791,
+            "Encrypted": false,
+            "Tags": [
+                "scene"
+            ],
+            "DependBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "share_assets.bundle",
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_bt.bundle",
+                "share_assets_sprite.bundle",
+                "share_assets_terrian.bundle",
+                "share_assets_terrian_grass.bundle",
+                "share_assets_tiles_grass.bundle",
+                "unityshaders.bundle"
+            ],
+            "ReferenceBundles": [],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/GameAssets/Scene/Battle.scene",
+                    "AssetGUID": "ab1a44a6159509540868862c76ec25e0"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Scene/Lobby.scene",
+                    "AssetGUID": "6e436f2fc660ed24481897ea37f486a9"
+                }
+            ]
+        },
+        {
+            "BundleName": "assets_gameassets_units.bundle",
+            "FileName": "a15a8ef242cd2c708fc9e9ee7d8f4ac3.bundle",
+            "FileHash": "a15a8ef242cd2c708fc9e9ee7d8f4ac3",
+            "FileCRC": 3601217216,
+            "FileSize": 7188,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundles": [
+                "share_assets_animator_soldier_soldier1.bundle",
+                "share_assets_bt.bundle",
+                "share_assets_sprite.bundle",
+                "unityshaders.bundle"
+            ],
+            "ReferenceBundles": [],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+                    "AssetGUID": "2b59f04729ccebd4c9ffb2e57310ae8a"
+                },
+                {
+                    "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+                    "AssetGUID": "2bbd0936893725342b9bcf28f5a2a6f7"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets.bundle",
+            "FileName": "e45d67855ffb73faef4de18390536dc5.bundle",
+            "FileHash": "e45d67855ffb73faef4de18390536dc5",
+            "FileCRC": 3666957607,
+            "FileSize": 2291,
+            "Encrypted": false,
+            "Tags": [
+                "scene"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_scene.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/AssetGroupsConfig.asset",
+                    "AssetGUID": "65a0bc9ce7f6bd842adab6e6388b0853"
+                },
+                {
+                    "AssetPath": "Assets/AssetRoutingConfig.asset",
+                    "AssetGUID": "b8c742c8c56d3db48a67064fafeacc5f"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_animator_soldier_soldier1.bundle",
+            "FileName": "029ea2a01673face776c02d7d6cfb0ed.bundle",
+            "FileHash": "029ea2a01673face776c02d7d6cfb0ed",
+            "FileCRC": 1787832962,
+            "FileSize": 10055,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundles": [
+                "share_assets_sprite.bundle"
+            ],
+            "ReferenceBundles": [
+                "assets_gameassets_scene.bundle",
+                "assets_gameassets_units.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1.controller",
+                    "AssetGUID": "bb8000e9c5e783c4892b680158ee6b59"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1idle.anim",
+                    "AssetGUID": "5977f6963048fbd43b9c10ec1e678670"
+                },
+                {
+                    "AssetPath": "Assets/Animator/soldier/soldier1/soldier1move.anim",
+                    "AssetGUID": "8036b3603a414624baa6d8c3cbff3032"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_bt.bundle",
+            "FileName": "c1a363831419643bf7e5edf8ebc4c5ce.bundle",
+            "FileHash": "c1a363831419643bf7e5edf8ebc4c5ce",
+            "FileCRC": 301661892,
+            "FileSize": 5400,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_scene.bundle",
+                "assets_gameassets_units.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/BT/UnitCombatConfig.asset",
+                    "AssetGUID": "08365072a1cfe9243bf1c2695033f3cb"
+                },
+                {
+                    "AssetPath": "Assets/BT/UnitStateGraph.asset",
+                    "AssetGUID": "d4116ba32e2b38c47b8d7a1eef4a166f"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_sprite.bundle",
+            "FileName": "7582373496435d2ca04ccb9924d703fb.bundle",
+            "FileHash": "7582373496435d2ca04ccb9924d703fb",
+            "FileCRC": 1063465705,
+            "FileSize": 125658,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_scene.bundle",
+                "assets_gameassets_units.bundle",
+                "share_assets_animator_soldier_soldier1.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/Sprite/spritesheet.png",
+                    "AssetGUID": "7962a2e49f6812a489c11282003762a6"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_terrian.bundle",
+            "FileName": "0b56e67740486e29cd5687e31745d78a.bundle",
+            "FileHash": "0b56e67740486e29cd5687e31745d78a",
+            "FileCRC": 1970442887,
+            "FileSize": 62928,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_scene.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/Terrian/grass.asset",
+                    "AssetGUID": "9b4bed01947f2144485da6bc5a8619aa"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass_y.asset",
+                    "AssetGUID": "6d8918df3820b7845803ffa04775144c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/I_tpict1.res.png",
+                    "AssetGUID": "a6b99326445656146885fd805fcb4f8c"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_terrian_grass.bundle",
+            "FileName": "ace507f9a9db840770275dd7172acec0.bundle",
+            "FileHash": "ace507f9a9db840770275dd7172acec0",
+            "FileCRC": 2170736963,
+            "FileSize": 39650,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_scene.bundle",
+                "share_assets_tiles_grass.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/Terrian/grass/g1.png",
+                    "AssetGUID": "250fd29d9cf5360409917425d8653f8c"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g2.png",
+                    "AssetGUID": "d9cb0a0f46038f04cbe746603b0d3113"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g3.png",
+                    "AssetGUID": "116904bdc94f8d64ea19c42078f4cd92"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g4.png",
+                    "AssetGUID": "a62768875d4b3874dab7307b3588ce6a"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g5.png",
+                    "AssetGUID": "4c6e7ffe357dfc949a3f7cb48f53d80e"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g6.png",
+                    "AssetGUID": "54e4f8b7808b29244a03415b129aed64"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g7.png",
+                    "AssetGUID": "2b25bb8ce730879469f4bc9ffbf624e1"
+                },
+                {
+                    "AssetPath": "Assets/Terrian/grass/g8.png",
+                    "AssetGUID": "358caaa0a11a1834db5adf0eb90170e2"
+                }
+            ]
+        },
+        {
+            "BundleName": "share_assets_tiles_grass.bundle",
+            "FileName": "6483533730d719970ef3a454b28d31a1.bundle",
+            "FileHash": "6483533730d719970ef3a454b28d31a1",
+            "FileCRC": 697084154,
+            "FileSize": 2320,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundles": [
+                "share_assets_terrian_grass.bundle"
+            ],
+            "ReferenceBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_scene.bundle"
+            ],
+            "BundleContents": [
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c00.asset",
+                    "AssetGUID": "c49b4764a334a794b84abd2803c3f5b1"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c01.asset",
+                    "AssetGUID": "af5cca05fa3f2de43a9e89f2a4b625fe"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c02.asset",
+                    "AssetGUID": "016a09d7a11e6d44d879d8c816b5c5f3"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c03.asset",
+                    "AssetGUID": "719c7e0171b64fc499c884308b19edca"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c04.asset",
+                    "AssetGUID": "7d2336b805e07234ab40546bad6136da"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c05.asset",
+                    "AssetGUID": "a71455b805ee5254f81e7c8f5ff221aa"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c06.asset",
+                    "AssetGUID": "02dc486a295df9f4a84d937c4ac3e306"
+                },
+                {
+                    "AssetPath": "Assets/Tiles/Grass/grass_atlas_r00c07.asset",
+                    "AssetGUID": "8c3b190ddc95afc43b8acbb58cdcbbd5"
+                }
+            ]
+        },
+        {
+            "BundleName": "unityshaders.bundle",
+            "FileName": "23aef1be9457bba6cc32cf136510c3e3.bundle",
+            "FileHash": "23aef1be9457bba6cc32cf136510c3e3",
+            "FileCRC": 2880596254,
+            "FileSize": 19053,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene",
+                "units"
+            ],
+            "DependBundles": [],
+            "ReferenceBundles": [
+                "assets_gameassets_map_tilesset.bundle",
+                "assets_gameassets_scene.bundle",
+                "assets_gameassets_units.bundle"
+            ],
+            "BundleContents": []
+        }
+    ],
+    "IndependAssets": []
+}

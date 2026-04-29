@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using YooAsset;
 
 namespace Script.Core.Assets
 {
@@ -12,8 +12,9 @@ namespace Script.Core.Assets
         public AssetBackendType BackendType => AssetBackendType.YooAsset;
         public string BackendName => "YooAsset";
 
-        private Type _yooAssetsType;
         private readonly string _packageName;
+        private ResourcePackage _package;
+        private readonly Dictionary<string, AssetHandle> _assetHandles = new Dictionary<string, AssetHandle>();
 
         public YooAssetBackend(string packageName = "DefaultPackage")
         {
@@ -22,45 +23,46 @@ namespace Script.Core.Assets
 
         public UniTask InitializeAsync(CancellationToken ct = default)
         {
-            _yooAssetsType = Type.GetType("YooAsset.YooAssets, YooAsset");
+            if (YooAssets.Initialized)
+                _package = YooAssets.TryGetPackage(_packageName);
             return UniTask.CompletedTask;
         }
 
-        public bool IsAvailable() => _yooAssetsType != null;
+        public bool IsAvailable() => YooAssets.Initialized;
 
         public async UniTask<UnityEngine.Object> LoadAssetAsync(string key, Type assetType, CancellationToken ct = default)
         {
-            await UniTask.Yield(ct);
             if (!IsAvailable())
             {
-                UnityEngine.Debug.LogWarning("YooAssetBackend: YooAsset package not found, load skipped.");
+                UnityEngine.Debug.LogWarning("YooAssetBackend: YooAssets 未初始化，跳过加载。");
                 return null;
             }
 
-            // 这里不直接绑定 YooAsset 类型，避免在未安装包时编译失败。
-            // 项目接入 YooAsset 后，可替换为强类型调用（Package.LoadAssetAsync<T>）。
-            try
+            _package ??= YooAssets.TryGetPackage(_packageName);
+            if (_package == null)
             {
-                MethodInfo getPackage = _yooAssetsType.GetMethod(
-                    "GetPackage",
-                    BindingFlags.Public | BindingFlags.Static,
-                    null,
-                    new[] { typeof(string) },
-                    null);
-                if (getPackage == null) return null;
-
-                var pkg = getPackage.Invoke(null, new object[] { _packageName });
-                if (pkg == null) return null;
-
-                MethodInfo loadMethod = pkg.GetType().GetMethod("LoadAssetSync", new[] { typeof(string), typeof(Type) });
-                if (loadMethod == null) return null;
-                return loadMethod.Invoke(pkg, new object[] { key, assetType }) as UnityEngine.Object;
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogWarning($"YooAssetBackend.LoadAssetAsync failed: {e.Message}");
+                UnityEngine.Debug.LogWarning($"YooAssetBackend: 未找到 Package: {_packageName}");
                 return null;
             }
+
+            var handle = _package.LoadAssetAsync(key, assetType);
+            while (!handle.IsDone)
+            {
+                ct.ThrowIfCancellationRequested();
+                await UniTask.Yield(ct);
+            }
+
+            if (handle.Status != EOperationStatus.Succeed)
+            {
+                UnityEngine.Debug.LogWarning($"YooAssetBackend.LoadAssetAsync 失败 key={key}, error={handle.LastError}");
+                handle.Release();
+                return null;
+            }
+
+            if (_assetHandles.TryGetValue(key, out var oldHandle))
+                oldHandle.Release();
+            _assetHandles[key] = handle;
+            return handle.AssetObject;
         }
 
         public async UniTask<IReadOnlyList<TextAsset>> LoadTextAssetsByGroupAsync(string groupKey, CancellationToken ct = default)
@@ -78,7 +80,12 @@ namespace Script.Core.Assets
 
         public void Release(string key, UnityEngine.Object loadedAsset)
         {
-            // 由 YooAsset handle 释放；当前反射兜底版本不跟踪 handle。
+            if (string.IsNullOrEmpty(key)) return;
+            if (_assetHandles.TryGetValue(key, out var handle))
+            {
+                _assetHandles.Remove(key);
+                handle.Release();
+            }
         }
     }
 }

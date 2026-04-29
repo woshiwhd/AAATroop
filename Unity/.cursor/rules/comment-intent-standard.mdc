@@ -1,0 +1,43 @@
+description: Require newcomer-friendly intent comments for core logic changes
+alwaysApply: true
+---
+
+# Comment Intent Standard
+
+When modifying code, write newcomer-friendly comments so first-time readers can quickly understand intent and flow.
+
+## Required
+
+- Add intent comments before core logic blocks, not only one-liners.
+- Explain why this logic exists, what problem it solves, and key assumptions.
+- Cover at least these areas when touched:
+  - async/concurrency coordination
+  - state transitions and scene flow
+  - resource loading/release lifecycle
+  - fallback and error handling branches
+- For modified methods with non-trivial flow, include at least one summary comment that describes the overall step sequence.
+- Keep comments concise but specific enough for a newcomer to follow.
+
+## Avoid
+
+- Do not add trivial comments that restate syntax (for example: assign value to variable).
+- Do not spam comments on obvious getters/setters or single-line straightforward statements.
+- Do not add stale TODO-style comments without action.
+
+## Good examples
+
+```csharp
+// Use one-shot init gate to avoid duplicate await registration under chunk load concurrency.
+await EnsureTemplateLoaderInitializedAsync(ct);
+```
+
+```csharp
+// Keep GlobalRoot across scene switches so AssetService is initialized once.
+DontDestroyOnLoad(gameObject);
+```
+
+```csharp
+// Transition order is Exit -> Enter to guarantee old scene resources are released
+// before initializing the next state's heavy dependencies.
+await stateMachine.ChangeStateAsync(next, ct);
+```

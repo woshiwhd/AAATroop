@@ -4,6 +4,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Script.Utilities;
+using YooAsset;
 
 namespace Script.Core.Assets
 {
@@ -144,10 +146,105 @@ namespace Script.Core.Assets
         public async UniTask<Scene> LoadSceneAsync(string sceneKey, LoadSceneMode mode = LoadSceneMode.Single, CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(sceneKey)) return default;
+            bool yooOnly = _routingConfig != null && _routingConfig.yooAssetOnly;
+            if (yooOnly)
+            {
+                var loaded = await TryLoadSceneByYooAsync(sceneKey, mode, ct);
+                if (loaded.IsValid()) return loaded;
+                return default;
+            }
+
             var op = SceneManager.LoadSceneAsync(sceneKey, mode);
             if (op == null) return default;
             await op.ToUniTask(cancellationToken: ct);
             return SceneManager.GetSceneByName(sceneKey);
+        }
+
+        private async UniTask<Scene> TryLoadSceneByYooAsync(string sceneKey, LoadSceneMode mode, CancellationToken ct)
+        {
+            if (!YooAssets.Initialized)
+            {
+                GameLog.LogError("AssetService: YooAssets 尚未初始化，无法通过 YooAsset 加载场景。");
+                return default;
+            }
+
+            string packageName = (_routingConfig != null && !string.IsNullOrWhiteSpace(_routingConfig.yooAssetPackageName))
+                ? _routingConfig.yooAssetPackageName
+                : "Main";
+            var package = YooAssets.TryGetPackage(packageName);
+            if (package == null)
+            {
+                GameLog.LogError($"AssetService: YooAsset package not found: {packageName}");
+                return default;
+            }
+
+            string resolvedSceneKey = ResolveSceneLocationByName(package, sceneKey);
+            if (string.IsNullOrEmpty(resolvedSceneKey))
+            {
+                GameLog.LogError($"AssetService: 场景名无效，未在目录 Assets/GameAssets/Scene 下找到。scene={sceneKey}");
+                return default;
+            }
+
+            SceneHandle handle = package.LoadSceneAsync(resolvedSceneKey, mode);
+            while (!handle.IsDone)
+            {
+                ct.ThrowIfCancellationRequested();
+                await UniTask.Yield(ct);
+            }
+
+            if (handle.Status == EOperationStatus.Succeed)
+            {
+                var scene = handle.SceneObject;
+                if (scene.IsValid())
+                    return scene;
+            }
+            else
+            {
+                GameLog.LogError($"AssetService: YooAsset 场景加载失败 key={sceneKey}, resolved={resolvedSceneKey}, error={handle.LastError}");
+            }
+
+            return SceneManager.GetSceneByName(GetSceneNameForUnityQuery(sceneKey));
+        }
+
+        private string ResolveSceneLocationByName(ResourcePackage package, string sceneNameInput)
+        {
+            if (package == null || string.IsNullOrWhiteSpace(sceneNameInput))
+                return null;
+
+            string sceneName = sceneNameInput.Trim();
+            int slash = sceneName.LastIndexOf('/');
+            if (slash >= 0 && slash < sceneName.Length - 1)
+                sceneName = sceneName.Substring(slash + 1);
+            int dot = sceneName.LastIndexOf('.');
+            if (dot > 0)
+                sceneName = sceneName.Substring(0, dot);
+
+            if (string.IsNullOrWhiteSpace(sceneName))
+                return null;
+
+            // 约定式地址：配置只填场景名，实际统一映射到固定目录。
+            string conventionLocation = $"Assets/GameAssets/Scene/{sceneName}.scene";
+            if (package.CheckLocationValid(conventionLocation))
+                return conventionLocation;
+
+            // 兼容：若 Collector 地址规则已设为场景名，保留一次直接命中尝试。
+            if (package.CheckLocationValid(sceneName))
+                return sceneName;
+
+            GameLog.LogWarning($"AssetService: 场景名未命中 scene={sceneNameInput}, 尝试地址={conventionLocation}/{sceneName}");
+            return null;
+        }
+
+        private static string GetSceneNameForUnityQuery(string sceneKey)
+        {
+            string sceneName = sceneKey;
+            int slash = sceneName.LastIndexOf('/');
+            if (slash >= 0 && slash < sceneName.Length - 1)
+                sceneName = sceneName.Substring(slash + 1);
+            int dot = sceneName.LastIndexOf('.');
+            if (dot > 0)
+                sceneName = sceneName.Substring(0, dot);
+            return sceneName;
         }
 
         public void Release(string key, UnityEngine.Object loadedAsset)

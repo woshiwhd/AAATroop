@@ -1,0 +1,176 @@
+{
+    "FileVersion": "2025.9.30",
+    "EnableAddressable": false,
+    "SupportExtensionless": true,
+    "LocationToLower": false,
+    "IncludeAssetGUID": false,
+    "ReplaceAssetPathWithAddress": false,
+    "OutputNameStyle": 0,
+    "BuildBundleType": 1,
+    "BuildPipeline": "EditorSimulateBuildPipeline",
+    "PackageName": "Main",
+    "PackageVersion": "Simulate",
+    "PackageNote": "2026/4/30 0:27:14",
+    "AssetList": [
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_1.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_2.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_3.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_4.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/map.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 1,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 1,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Battle.scene",
+            "AssetGUID": "",
+            "AssetTags": [
+                "scene"
+            ],
+            "BundleID": 2,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Lobby.scene",
+            "AssetGUID": "",
+            "AssetTags": [
+                "scene"
+            ],
+            "BundleID": 2,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "units"
+            ],
+            "BundleID": 3,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "units"
+            ],
+            "BundleID": 3,
+            "DependBundleIDs": []
+        }
+    ],
+    "BundleList": [
+        {
+            "BundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "UnityCRC": 0,
+            "FileHash": "32767c9032400bb5d3f53c2ab4673857",
+            "FileCRC": 0,
+            "FileSize": 169780,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "assets_gameassets_map_tilesset.bundle",
+            "UnityCRC": 0,
+            "FileHash": "b9c9f210053bc675e569c5d75bb23d3c",
+            "FileCRC": 0,
+            "FileSize": 9832,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "assets_gameassets_scene.bundle",
+            "UnityCRC": 0,
+            "FileHash": "0e19d9bea17c8f3254bc51700ce3829f",
+            "FileCRC": 0,
+            "FileSize": 123325,
+            "Encrypted": false,
+            "Tags": [
+                "scene"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "assets_gameassets_units.bundle",
+            "UnityCRC": 0,
+            "FileHash": "fc5530b64faa28436643f73384549dc7",
+            "FileCRC": 0,
+            "FileSize": 11492,
+            "Encrypted": false,
+            "Tags": [
+                "units"
+            ],
+            "DependBundleIDs": []
+        }
+    ]
+}

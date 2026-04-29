@@ -1,0 +1,343 @@
+{
+    "FileVersion": "2025.9.30",
+    "EnableAddressable": false,
+    "SupportExtensionless": true,
+    "LocationToLower": false,
+    "IncludeAssetGUID": false,
+    "ReplaceAssetPathWithAddress": false,
+    "OutputNameStyle": 0,
+    "BuildBundleType": 2,
+    "BuildPipeline": "ScriptableBuildPipeline",
+    "PackageName": "Main",
+    "PackageVersion": "2026-04-30-7",
+    "PackageNote": "2026/4/30 0:07:12",
+    "AssetList": [
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_1.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_2.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_3.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/ChunkTemplates/template_sample_32_4.json",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 0,
+            "DependBundleIDs": []
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/map.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 1,
+            "DependBundleIDs": [
+                8,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Map/Tilesset/TileDatabase.asset",
+            "AssetGUID": "",
+            "AssetTags": [
+                "map"
+            ],
+            "BundleID": 1,
+            "DependBundleIDs": [
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Battle.scene",
+            "AssetGUID": "",
+            "AssetTags": [
+                "scene"
+            ],
+            "BundleID": 2,
+            "DependBundleIDs": [
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Scene/Lobby.scene",
+            "AssetGUID": "",
+            "AssetTags": [
+                "scene"
+            ],
+            "BundleID": 2,
+            "DependBundleIDs": [
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/enemy.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "units"
+            ],
+            "BundleID": 3,
+            "DependBundleIDs": [
+                5,
+                6,
+                7,
+                11
+            ]
+        },
+        {
+            "Address": "",
+            "AssetPath": "Assets/GameAssets/Units/Player.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "units"
+            ],
+            "BundleID": 3,
+            "DependBundleIDs": [
+                5,
+                7,
+                11
+            ]
+        }
+    ],
+    "BundleList": [
+        {
+            "BundleName": "assets_gameassets_map_chunktemplates.bundle",
+            "UnityCRC": 2978640198,
+            "FileHash": "97a1d3eb7b1a0a731b1eaa159895d2a4",
+            "FileCRC": 763555719,
+            "FileSize": 2522,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "assets_gameassets_map_tilesset.bundle",
+            "UnityCRC": 1230617016,
+            "FileHash": "2662fec6d5ee2ebecc7a569afb77dd21",
+            "FileCRC": 706906476,
+            "FileSize": 6809,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundleIDs": [
+                8,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "BundleName": "assets_gameassets_scene.bundle",
+            "UnityCRC": 2198591705,
+            "FileHash": "6c46110e47352b1f7160faff32effd9f",
+            "FileCRC": 3432806115,
+            "FileSize": 45791,
+            "Encrypted": false,
+            "Tags": [
+                "scene"
+            ],
+            "DependBundleIDs": [
+                1,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+            ]
+        },
+        {
+            "BundleName": "assets_gameassets_units.bundle",
+            "UnityCRC": 500354298,
+            "FileHash": "a15a8ef242cd2c708fc9e9ee7d8f4ac3",
+            "FileCRC": 3601217216,
+            "FileSize": 7188,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundleIDs": [
+                5,
+                6,
+                7,
+                11
+            ]
+        },
+        {
+            "BundleName": "share_assets.bundle",
+            "UnityCRC": 714255318,
+            "FileHash": "e45d67855ffb73faef4de18390536dc5",
+            "FileCRC": 3666957607,
+            "FileSize": 2291,
+            "Encrypted": false,
+            "Tags": [
+                "scene"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "share_assets_animator_soldier_soldier1.bundle",
+            "UnityCRC": 1087086405,
+            "FileHash": "029ea2a01673face776c02d7d6cfb0ed",
+            "FileCRC": 1787832962,
+            "FileSize": 10055,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundleIDs": [
+                7
+            ]
+        },
+        {
+            "BundleName": "share_assets_bt.bundle",
+            "UnityCRC": 1289008405,
+            "FileHash": "c1a363831419643bf7e5edf8ebc4c5ce",
+            "FileCRC": 301661892,
+            "FileSize": 5400,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "share_assets_sprite.bundle",
+            "UnityCRC": 676087938,
+            "FileHash": "7582373496435d2ca04ccb9924d703fb",
+            "FileCRC": 1063465705,
+            "FileSize": 125658,
+            "Encrypted": false,
+            "Tags": [
+                "scene",
+                "units"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "share_assets_terrian.bundle",
+            "UnityCRC": 1041169686,
+            "FileHash": "0b56e67740486e29cd5687e31745d78a",
+            "FileCRC": 1970442887,
+            "FileSize": 62928,
+            "Encrypted": false,
+            "Tags": [
+                "map"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "share_assets_terrian_grass.bundle",
+            "UnityCRC": 436096542,
+            "FileHash": "ace507f9a9db840770275dd7172acec0",
+            "FileCRC": 2170736963,
+            "FileSize": 39650,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundleIDs": []
+        },
+        {
+            "BundleName": "share_assets_tiles_grass.bundle",
+            "UnityCRC": 2218578430,
+            "FileHash": "6483533730d719970ef3a454b28d31a1",
+            "FileCRC": 697084154,
+            "FileSize": 2320,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene"
+            ],
+            "DependBundleIDs": [
+                9
+            ]
+        },
+        {
+            "BundleName": "unityshaders.bundle",
+            "UnityCRC": 2518968818,
+            "FileHash": "23aef1be9457bba6cc32cf136510c3e3",
+            "FileCRC": 2880596254,
+            "FileSize": 19053,
+            "Encrypted": false,
+            "Tags": [
+                "map",
+                "scene",
+                "units"
+            ],
+            "DependBundleIDs": []
+        }
+    ]
+}
