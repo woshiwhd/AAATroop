@@ -1,14 +1,8 @@
-description: Require newcomer-friendly intent comments for core logic changes (Unity workspace copy; keep in sync with ../../.cursor/rules/comment-intent-standard.mdc)
+description: Require newcomer-friendly intent comments for core logic changes (workspace root copy; keep in sync with Unity/.cursor/rules/comment-intent-standard.mdc)
 alwaysApply: true
 ---
 
 # Comment Intent Standard
-
-## Cursor 何时会带上本规则
-
-- `alwaysApply: true` 表示在 **Agent 聊天**里会进入上下文；**Inline Edit（Ctrl+K）等不按项目规则走**，别用它验证是否生效。
-- 项目规则路径必须是 **当前工作区根目录** 下的 `.cursor/rules/`。若工作区根是 `Unity` 子文件夹，用本文件；若根是仓库 `AAATroop`，请依赖根目录 [`.cursor/rules/comment-intent-standard.mdc`](../../.cursor/rules/comment-intent-standard.mdc)（与本文内容应保持一致）。
-- 在 **Cursor Settings → Rules** 里可查看是否已识别到项目规则。
 
 When modifying code, write newcomer-friendly comments so first-time readers can quickly understand intent and flow.
 

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b6bd933095b75a4e92cd375116b0ad0, type: 3}
+  m_Name: SceneFlowConfig
+  m_EditorClassIdentifier: 
+  yooAssetPackageName: Main
+  bootstrapSceneKey: Bootstrap
+  lobbySceneKey: Lobby
+  battleSceneKey: Battle
+  autoEnterLobby: 1
+  enterLobbyDelaySeconds: 0.2
+  preloadBattleGroup: 0
+  battlePreloadGroupKey: battle_core

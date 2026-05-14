@@ -481,6 +481,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 404791929}
   m_CullTransparentMesh: 1
+--- !u!1 &550916567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 7
+  m_Component:
+  - component: {fileID: 550916569}
+  - component: {fileID: 550916568}
+  m_Layer: 0
+  m_HasEditorInfo: 1
+  m_Name: SceneFlowManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &550916568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550916567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21b245fed0c5d8439034c36e26f4f95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: 038a78ce2a2c6654ba4628b2724de428, type: 2}
+--- !u!4 &550916569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550916567}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 340.15237, y: -289.65088, z: -2.9316623}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &689373946
 GameObject:
   m_ObjectHideFlags: 0
@@ -1260,12 +1306,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1663615789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e88129cb2529ea748a2783f63ae3aeb5, type: 3}
+  m_Script: {fileID: 11500000, guid: 85b42b6af14a72d459ab26d8f0fa0110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbySceneName: Lobby
-  autoEnterLobby: 1
-  enterDelaySeconds: 0.2
+  routingConfig: {fileID: 11400000, guid: b8c742c8c56d3db48a67064fafeacc5f, type: 2}
+  groupsConfig: {fileID: 11400000, guid: 65a0bc9ce7f6bd842adab6e6388b0853, type: 2}
+  dontDestroyOnLoad: 1
 --- !u!4 &1663615791
 Transform:
   m_ObjectHideFlags: 0
@@ -1586,3 +1632,4 @@ SceneRoots:
   - {fileID: 1663615791}
   - {fileID: 303254725}
   - {fileID: 1984561616}
+  - {fileID: 550916569}

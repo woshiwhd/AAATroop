@@ -1,0 +1,19 @@
+{
+  "name": "AAATroop.Editor",
+  "rootNamespace": "",
+  "references": [
+    "AAATroop.Gameplay",
+    "AAATroop.Framework"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

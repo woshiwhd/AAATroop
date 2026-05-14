@@ -19,6 +19,12 @@
       },
       "url": "https://packages.tuanjie.cn"
     },
+    "com.aaatroop.framework": {
+      "version": "file:../../AAATroop.Framework",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.boxqkrtm.ide.cursor": {
       "version": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
       "depth": 0,
